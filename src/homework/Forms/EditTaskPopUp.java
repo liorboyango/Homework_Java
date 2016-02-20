@@ -5,49 +5,28 @@ import homework.Users.AdminUser;
 import homework.Users.TeacherUser;
 import homework.Users.User;
 import homework.Utils.ToastMessage;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Properties;
-import javax.swing.*;
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Calendar;
-import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.ImageIcon;
 import org.jdesktop.xswingx.PromptSupport;
 import resources.LocalizationUtil;
 
-public class EditTaskPopUp extends JFrame implements ActionListener {
+public class EditTaskPopUp extends javax.swing.JFrame {
 
     private final ImageIcon imgIcon = new ImageIcon(getClass().getResource("/Images/icon.gif"));
     private AdminUser currentAdminUser = new AdminUser();
     private TeacherUser currentTeacherUser = new TeacherUser();
     private Task task = new Task();
     private int userType = 0;
-    private JButton btnCancel;
-    private JButton btnOk;
-    private JTextField txtTaskName = new JTextField(30);
-    private UtilDateModel model;
-    private JDatePanelImpl datePanel;
-    private JDatePickerImpl datePicker;
-    private JMenuBar menuBar = new JMenuBar();
-    private JMenu menuMenu = new JMenu(LocalizationUtil.localizedResourceBundle.getString("menuMenu"));
-    private JMenuItem btnMenuExit = new JMenuItem(LocalizationUtil.localizedResourceBundle.getString("btnExit"));
 
     public EditTaskPopUp(Task task, User user) {
-        //set screen parameters
-        super(LocalizationUtil.localizedResourceBundle.getString("editTaskMenuKey"));
-        setLayout(new FlowLayout());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 400);
+        initComponents();
         setVisible(true);
         setLocationRelativeTo(null);
         setIconImage(imgIcon.getImage());
-        setResizable(false);
-        buildMenu();
 
         if (task != null) {
             this.task = task;
@@ -69,111 +48,233 @@ public class EditTaskPopUp extends JFrame implements ActionListener {
             return;
         }
 
-        //set date picker component
-        model = new UtilDateModel();
-        Properties p = new Properties();
-        p.put("text.today", "Today");
-        p.put("text.month", "Month");
-        p.put("text.year", "Year");
-        datePanel = new JDatePanelImpl(model, p);
-        datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-        
-        //set components
-        btnOk = new JButton(LocalizationUtil.localizedResourceBundle.getString("okKey"));
-        btnCancel = new JButton(LocalizationUtil.localizedResourceBundle.getString("btnCancel"));
-        txtTaskName.setText(task.getTaskName());
-        model.setValue(task.getDeadline());
-        add(txtTaskName);
-        add(datePicker);
-        add(btnOk);
-        add(btnCancel);
-
         //set watermarks
         PromptSupport.setPrompt(LocalizationUtil.localizedResourceBundle.getString("lblTaskName"), txtTaskName);
-        PromptSupport.setPrompt(LocalizationUtil.localizedResourceBundle.getString("lblTaskDeadline"), datePicker.getJFormattedTextField());
 
-        //set Listeners
-        btnOk.addActionListener(this);
-        btnCancel.addActionListener(this);
-        btnMenuExit.addActionListener(this);
+        updateCaptions();
 
+        //set previous task details
+        txtTaskName.setText(task.getTaskName());
+        datePicker.setDate(task.getDeadline());
+        datePicker.getDateEditor().setEnabled(false);
+        datePicker.getCalendarButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //set minimum date for today - only after the calendar button is clicked
+                //so that if user only wants to change task name, old date can remain even if deadline expired
+                datePicker.setMinSelectableDate(Calendar.getInstance().getTime());
+            }
+        });
+
+        btnOk.setEnabled(false);
+        datePicker.getDateEditor().addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if (datePicker.getDate().equals(task.getDeadline()) && task.getTaskName().equals(txtTaskName.getText())) {
+                    btnOk.setEnabled(false);
+                } else {
+                    btnOk.setEnabled(true);
+                }
+
+            }
+        });
+
+        txtTaskName.requestFocus();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnOk) {
-            System.out.println(txtTaskName.getText());
-            if (txtTaskName.getText().isEmpty()) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errEnterTaskName"), 3000);
-                toastMessage.setVisible(true);
-                txtTaskName.requestFocus();
-                return;
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        txtTaskName = new javax.swing.JTextField();
+        datePicker = new com.toedter.calendar.JDateChooser();
+        btnOk = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuMenu = new javax.swing.JMenu();
+        btnMenuExit = new javax.swing.JMenuItem();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        txtTaskName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTaskNameKeyReleased(evt);
             }
-            if (datePicker.getJFormattedTextField().getText().isEmpty()) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errEnterTaskDeadline"), 3000);
-                toastMessage.setVisible(true);
-                datePicker.requestFocus();
-                return;
+        });
+
+        datePicker.setDateFormatString("dd/MM/yyyy");
+
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/uimessages_iw"); // NOI18N
+        btnOk.setText(bundle.getString("okKey")); // NOI18N
+        btnOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOkActionPerformed(evt);
             }
-            task = new Task(txtTaskName.getText(), model.getValue(), task.getTaskID(), task.getClassID(), task.getStatus());
-            if (userType == 1 && currentAdminUser.editTask(task)) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskSucc"), 3000);
-                toastMessage.setVisible(true);
-                AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
-                this.dispose();
+        });
 
-            } else if (userType == 2 && currentTeacherUser.editTask(task)) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskSucc"), 3000);
-                toastMessage.setVisible(true);
-                TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
-                this.dispose();
-            } else {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskFail"), 3000);
-                toastMessage.setVisible(true);
+        btnCancel.setText(bundle.getString("btnCancel")); // NOI18N
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
             }
+        });
 
-        } else if (e.getSource() == btnCancel) {
-            if (userType == 1) {
-                AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
-                this.dispose();
+        menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
-            } else if (userType == 2) {
-                TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
-                this.dispose();
-            } else {
-                this.dispose();
+        btnMenuExit.setText(bundle.getString("btnExit")); // NOI18N
+        btnMenuExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMenuExitActionPerformed(evt);
             }
-
-        } else if (e.getSource() == btnMenuExit) {
-            System.exit(0);
-        }
-    }
-
-    private void buildMenu() {
+        });
         menuMenu.add(btnMenuExit);
-        menuBar.add(menuMenu);
-        setJMenuBar(menuBar);
+
+        jMenuBar1.add(menuMenu);
+
+        setJMenuBar(jMenuBar1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(124, 124, 124)
+                        .addComponent(txtTaskName, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(153, 153, 153)
+                        .addComponent(datePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(206, 206, 206)
+                        .addComponent(btnOk)
+                        .addGap(61, 61, 61)
+                        .addComponent(btnCancel)))
+                .addContainerGap(118, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(53, 53, 53)
+                .addComponent(txtTaskName, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(datePicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnOk)
+                    .addComponent(btnCancel))
+                .addGap(75, 75, 75))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
+        if (txtTaskName.getText().isEmpty()) {
+            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errEnterTaskName"), 3000);
+            toastMessage.setVisible(true);
+            txtTaskName.requestFocus();
+            return;
+        }
+        if (datePicker.getDate().toString().isEmpty()) {
+            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errEnterTaskDeadline"), 3000);
+            toastMessage.setVisible(true);
+            datePicker.requestFocus();
+            return;
+        }
+        task = new Task(txtTaskName.getText(), datePicker.getDate(), task.getTaskID(), task.getClassID(), task.getStatus());
+        if (userType == 1 && currentAdminUser.editTask(task)) {
+            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskSucc"), 3000);
+            toastMessage.setVisible(true);
+            AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
+            this.dispose();
+
+        } else if (userType == 2 && currentTeacherUser.editTask(task)) {
+            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskSucc"), 3000);
+            toastMessage.setVisible(true);
+            TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
+            this.dispose();
+        } else {
+            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskFail"), 3000);
+            toastMessage.setVisible(true);
+        }
+    }//GEN-LAST:event_btnOkActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        if (userType == 1) {
+            AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
+            this.dispose();
+
+        } else if (userType == 2) {
+            TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
+            this.dispose();
+        } else {
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnMenuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuExitActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnMenuExitActionPerformed
+
+    private void txtTaskNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTaskNameKeyReleased
+        if (datePicker.getDate().equals(task.getDeadline()) && task.getTaskName().equals(txtTaskName.getText())) {
+            btnOk.setEnabled(false);
+        } else {
+            btnOk.setEnabled(true);
+        }
+    }//GEN-LAST:event_txtTaskNameKeyReleased
+
+    private void updateCaptions() {
+        setTitle(LocalizationUtil.localizedResourceBundle.getString("addTaskMenuKey"));
+        menuMenu.setText(LocalizationUtil.localizedResourceBundle.getString("menuMenu"));
+        btnMenuExit.setText(LocalizationUtil.localizedResourceBundle.getString("btnExit"));
+        btnOk.setText(LocalizationUtil.localizedResourceBundle.getString("okKey"));
+        btnCancel.setText(LocalizationUtil.localizedResourceBundle.getString("btnCancel"));
+        PromptSupport.setPrompt(LocalizationUtil.localizedResourceBundle.getString("lblTaskName"), txtTaskName);
+        datePicker.setLocale(LocalizationUtil.localizedResourceBundle.getLocale());
     }
 
-    public class DateLabelFormatter extends AbstractFormatter {
-
-        private String datePattern = "dd-MM-yyyy";
-        private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
-
-        @Override
-        public Object stringToValue(String text) throws ParseException {
-            return dateFormatter.parseObject(text);
-        }
-
-        @Override
-        public String valueToString(Object value) throws ParseException {
-            if (value != null) {
-                Calendar cal = (Calendar) value;
-                return dateFormatter.format(cal.getTime());
+    public static void main(Task task, User user) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
             }
-
-            return "";
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(EditTaskPopUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(EditTaskPopUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(EditTaskPopUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(EditTaskPopUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
 
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new EditTaskPopUp(task, user).setVisible(true);
+            }
+        });
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JMenuItem btnMenuExit;
+    private javax.swing.JButton btnOk;
+    private com.toedter.calendar.JDateChooser datePicker;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu menuMenu;
+    private javax.swing.JTextField txtTaskName;
+    // End of variables declaration//GEN-END:variables
 }
