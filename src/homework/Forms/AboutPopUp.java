@@ -97,10 +97,11 @@ public class AboutPopUp extends javax.swing.JFrame {
         lblCopyRights.setText(bundle.getString("copyRights")); // NOI18N
         lblCopyRights.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
+        txtAboutContent.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         txtAboutContent.setText(bundle.getString("txtAboutContent")); // NOI18N
         txtAboutContent.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         txtAboutContent.setFocusable(false);
-        txtAboutContent.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        txtAboutContent.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
         btnEmail.setBackground(new java.awt.Color(255, 255, 255));
         btnEmail.setForeground(new java.awt.Color(51, 51, 255));
@@ -128,29 +129,32 @@ public class AboutPopUp extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lblImageContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 642, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(277, 277, 277)
-                        .addComponent(btnClose)))
-                .addContainerGap(12, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtAboutContent))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(216, 216, 216)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnEmail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnDonate, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(lblCopyRights))
+                        .addComponent(lblCopyRights, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(lblVersion)))
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lblImageContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 642, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(277, 277, 277)
+                                .addComponent(btnClose)))
+                        .addGap(0, 6, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(txtAboutContent)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,7 +166,7 @@ public class AboutPopUp extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(lblVersion)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblCopyRights)
+                .addComponent(lblCopyRights, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEmail)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -203,10 +207,10 @@ public class AboutPopUp extends javax.swing.JFrame {
         txtAboutContent.setText(LocalizationUtil.localizedResourceBundle.getString("txtAboutContent"));
         if (Language.equals("iw")) {
             txtAboutContent.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-            txtAboutContent.setHorizontalAlignment(SwingConstants.RIGHT);
+           // txtAboutContent.setHorizontalAlignment(SwingConstants.RIGHT);
         } else {
             txtAboutContent.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-            txtAboutContent.setHorizontalAlignment(SwingConstants.LEFT);
+          //  txtAboutContent.setHorizontalAlignment(SwingConstants.LEFT);
         }
         btnClose.setText(LocalizationUtil.localizedResourceBundle.getString("btnClose"));
         lblVersion.setText(LocalizationUtil.localizedResourceBundle.getString("version"));
