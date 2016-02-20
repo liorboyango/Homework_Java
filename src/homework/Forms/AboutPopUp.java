@@ -13,7 +13,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
 import resources.LocalizationUtil;
 
 public class AboutPopUp extends javax.swing.JFrame {
@@ -49,7 +48,7 @@ public class AboutPopUp extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         //set aboutUs icon to label
         Image imgAbout = aboutIcon.getImage();
         Image newImgAbout = imgAbout.getScaledInstance(getWidth(), 180, java.awt.Image.SCALE_SMOOTH);
@@ -207,10 +206,8 @@ public class AboutPopUp extends javax.swing.JFrame {
         txtAboutContent.setText(LocalizationUtil.localizedResourceBundle.getString("txtAboutContent"));
         if (Language.equals("iw")) {
             txtAboutContent.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-           // txtAboutContent.setHorizontalAlignment(SwingConstants.RIGHT);
         } else {
             txtAboutContent.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-          //  txtAboutContent.setHorizontalAlignment(SwingConstants.LEFT);
         }
         btnClose.setText(LocalizationUtil.localizedResourceBundle.getString("btnClose"));
         lblVersion.setText(LocalizationUtil.localizedResourceBundle.getString("version"));

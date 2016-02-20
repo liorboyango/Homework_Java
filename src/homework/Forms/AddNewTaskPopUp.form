@@ -94,6 +94,9 @@
     </Component>
     <Component class="com.toedter.calendar.JDateChooser" name="datePicker">
       <Properties>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="resources/uimessages_iw.properties" key="errEnterTaskDeadline" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
       </Properties>
     </Component>

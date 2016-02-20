@@ -56,6 +56,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
         //set previous task details
         txtTaskName.setText(task.getTaskName());
         datePicker.setDate(task.getDeadline());
+        
         datePicker.getDateEditor().setEnabled(false);
         datePicker.getCalendarButton().addActionListener(new ActionListener() {
             @Override
@@ -65,7 +66,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
                 datePicker.setMinSelectableDate(Calendar.getInstance().getTime());
             }
         });
-
+        
         btnOk.setEnabled(false);
         datePicker.getDateEditor().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
@@ -102,9 +103,10 @@ public class EditTaskPopUp extends javax.swing.JFrame {
             }
         });
 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/uimessages_iw"); // NOI18N
+        datePicker.setToolTipText(bundle.getString("errEnterTaskDeadline")); // NOI18N
         datePicker.setDateFormatString("dd/MM/yyyy");
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/uimessages_iw"); // NOI18N
         btnOk.setText(bundle.getString("okKey")); // NOI18N
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -225,7 +227,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtTaskNameKeyReleased
 
-    private void updateCaptions() {
+    private void updateCaptions(){
         setTitle(LocalizationUtil.localizedResourceBundle.getString("addTaskMenuKey"));
         menuMenu.setText(LocalizationUtil.localizedResourceBundle.getString("menuMenu"));
         btnMenuExit.setText(LocalizationUtil.localizedResourceBundle.getString("btnExit"));

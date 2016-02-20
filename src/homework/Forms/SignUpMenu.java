@@ -23,7 +23,7 @@ public class SignUpMenu extends javax.swing.JFrame {
 
     private final ImageIcon imgIcon = new ImageIcon(getClass().getResource("/Images/icon.gif"));
     private ImageIcon langIcon = new ImageIcon(getClass().getResource("/Images/LangIcon.png"));
-    private ImageIcon signupIcon = new ImageIcon(getClass().getResource("/Images/signup.jpg"));
+    private ImageIcon signupIcon = new ImageIcon(getClass().getResource("/Images/signup.png"));
     private static String Language = LocalizationUtil.localizedResourceBundle.getLocale().getLanguage();
     private final Color colorStrong = new Color(155, 255, 155);
     private final Color colorGood = new Color(102, 153, 255);
@@ -148,7 +148,7 @@ public class SignUpMenu extends javax.swing.JFrame {
 
         lblUsernameDefinition.setText(bundle.getString("lblUsernameDefinition")); // NOI18N
 
-        lblImageContainer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/signup.jpg"))); // NOI18N
+        lblImageContainer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/signup.png"))); // NOI18N
 
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 

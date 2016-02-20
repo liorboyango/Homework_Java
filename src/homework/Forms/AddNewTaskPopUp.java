@@ -64,9 +64,10 @@ public class AddNewTaskPopUp extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/uimessages_iw"); // NOI18N
+        datePicker.setToolTipText(bundle.getString("errEnterTaskDeadline")); // NOI18N
         datePicker.setDateFormatString("dd/MM/yyyy");
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/uimessages_iw"); // NOI18N
         btnOk.setText(bundle.getString("okKey")); // NOI18N
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

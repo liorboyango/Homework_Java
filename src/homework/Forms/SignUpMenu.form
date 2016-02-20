@@ -252,7 +252,7 @@
     <Component class="javax.swing.JLabel" name="lblImageContainer">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/Images/signup.jpg"/>
+          <Image iconType="3" name="/Images/signup.png"/>
         </Property>
       </Properties>
     </Component>
