@@ -106,6 +106,7 @@ public class MainScreen extends javax.swing.JFrame {
             }
         });
 
+        btnSignup.setBackground(new java.awt.Color(155, 255, 155));
         btnSignup.setText(bundle.getString("btnSignup")); // NOI18N
         btnSignup.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
