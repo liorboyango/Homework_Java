@@ -93,8 +93,7 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
         btnLanguage = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
-        menuAdd = new javax.swing.JMenu();
-        btnMenuAddTask = new javax.swing.JMenuItem();
+        btnMenuEditProfile = new javax.swing.JMenuItem();
         btnMenuLogout = new javax.swing.JMenuItem();
         btnMenuExit = new javax.swing.JMenuItem();
         menuHelp = new javax.swing.JMenu();
@@ -294,17 +293,13 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
 
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
-        menuAdd.setText(bundle.getString("menuAdd")); // NOI18N
-
-        btnMenuAddTask.setText(bundle.getString("taskKey")); // NOI18N
-        btnMenuAddTask.addActionListener(new java.awt.event.ActionListener() {
+        btnMenuEditProfile.setText(bundle.getString("btnEditProfile")); // NOI18N
+        btnMenuEditProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMenuAddTaskActionPerformed(evt);
+                btnMenuEditProfileActionPerformed(evt);
             }
         });
-        menuAdd.add(btnMenuAddTask);
-
-        menuMenu.add(menuAdd);
+        menuMenu.add(btnMenuEditProfile);
 
         btnMenuLogout.setText(bundle.getString("btnLogout")); // NOI18N
         btnMenuLogout.addActionListener(new java.awt.event.ActionListener() {
@@ -378,16 +373,6 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
         MainScreen mainMenuTest = new MainScreen();
         this.dispose();
     }//GEN-LAST:event_btnMenuLogoutActionPerformed
-
-    private void btnMenuAddTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuAddTaskActionPerformed
-        if (currentUser.getClassID() != 0) {
-            AddNewTaskPopUp newTaskPopUp = new AddNewTaskPopUp(currentUser);
-            this.dispose();
-        } else {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errNotInClass"), 3000);
-            toastMessage.setVisible(true);
-        }
-    }//GEN-LAST:event_btnMenuAddTaskActionPerformed
 
     private void btnProvideSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProvideSolutionActionPerformed
         int taskID;
@@ -572,6 +557,8 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
             Language = "en";
         } else if (Language.equals("en")) {
             Language = "iw";
+        } else {
+            Language = LocalizationUtil.localizedResourceBundle.getLocale().getLanguage();
         }
         LocalizationUtil.localizedResourceBundle = ResourceBundle.getBundle("resources.uimessages", new Locale(Language));
         updateCaptions();
@@ -580,6 +567,11 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
     private void btnHelpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHelpAboutActionPerformed
         AboutPopUp aboutPopUp = new AboutPopUp();
     }//GEN-LAST:event_btnHelpAboutActionPerformed
+
+    private void btnMenuEditProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuEditProfileActionPerformed
+        EditProfile editProfile = new EditProfile(currentUser);
+        this.dispose();
+    }//GEN-LAST:event_btnMenuEditProfileActionPerformed
 
     private void loadUsersList(int taskID, boolean done) {
         if (currentUser.getClassID() == 0) {    //if classID ==0 means that the teacher is not in a class - therefore cannot see other users that are in the same default classID == 0
@@ -749,10 +741,9 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
         btnEditTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnEditTask"));
         btnDeleteTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnDeleteTask"));
         menuMenu.setText(LocalizationUtil.localizedResourceBundle.getString("menuMenu"));
-        menuAdd.setText(LocalizationUtil.localizedResourceBundle.getString("menuAdd"));
         menuHelp.setText(LocalizationUtil.localizedResourceBundle.getString("menuHelp"));
         btnHelpAbout.setText(LocalizationUtil.localizedResourceBundle.getString("helpAbout"));
-        btnMenuAddTask.setText(LocalizationUtil.localizedResourceBundle.getString("taskKey"));
+        btnMenuEditProfile.setText(LocalizationUtil.localizedResourceBundle.getString("btnEditProfile"));
         btnMenuExit.setText(LocalizationUtil.localizedResourceBundle.getString("btnExit"));
         btnMenuLogout.setText(LocalizationUtil.localizedResourceBundle.getString("btnLogout"));
         btnApproveSolution.setText(LocalizationUtil.localizedResourceBundle.getString("btnApproveApprove"));
@@ -890,7 +881,7 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
     private javax.swing.JButton btnEditTask;
     private javax.swing.JMenuItem btnHelpAbout;
     private javax.swing.JButton btnLanguage;
-    private javax.swing.JMenuItem btnMenuAddTask;
+    private javax.swing.JMenuItem btnMenuEditProfile;
     private javax.swing.JMenuItem btnMenuExit;
     private javax.swing.JMenuItem btnMenuLogout;
     private javax.swing.JButton btnProvideSolution;
@@ -904,7 +895,6 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     protected javax.swing.JLabel lblWelcome;
-    private javax.swing.JMenu menuAdd;
     private javax.swing.JMenu menuHelp;
     private javax.swing.JMenu menuMenu;
     private javax.swing.JList<String> solutionsList;

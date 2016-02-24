@@ -285,4 +285,19 @@ public abstract class User {
         }
     }   //create the user in DB
 
+    public boolean editUser(String email, String username, String password, int userType) {
+        try {
+            if (DataBase.getInstance().editUser(email, username, password, userType)) {
+                setUsername(username);
+                setPassword(password);
+                setUserType(userType);
+                return true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
 }

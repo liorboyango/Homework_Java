@@ -318,6 +318,48 @@ public class DataBase {
         return false;
     }
 
+    public boolean editUser(String email, String username, String password, int userType) throws SQLException{
+            PreparedStatement pStatement = null;
+            Connection connection = null;
+            String queryUsers = "UPDATE Users SET Username = ? , Password = ? , UserType = ? , ClassID = 0 WHERE email = ?";
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                connection
+                        = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
+
+                pStatement = connection.prepareStatement(queryUsers);
+                pStatement.setString(1, username);
+                pStatement.setString(2, password);
+                pStatement.setInt(3, userType);
+                pStatement.setString(4, email);
+                int resultSet = pStatement.executeUpdate();
+
+                if (resultSet > 0) {
+                    System.out.println("Successfully Edited User");
+                    return true;
+                } else {
+                    System.out.println("Failed to Edit User");
+                    return false;
+
+                }
+            } catch (SQLException sqle) {
+                System.out.println("Failed to Edit User");
+                sqle.printStackTrace();
+                System.out.println("SQLException: " + sqle.getMessage());
+                System.out.println("Vendor Error: " + sqle.getErrorCode());
+                return false;
+            } catch (ClassNotFoundException e) {
+                System.out.println("Failed to Edit User");
+                e.printStackTrace();
+                return false;
+            } finally {
+                pStatement.close();		// close statement and resultSet
+                connection.close();
+                System.out.println("editUser connection closed");
+            }
+    }
+    
     public boolean addUserToGroup(User user, int classId) throws SQLException {
         if (!(user == null)) {
             PreparedStatement pStatement = null;

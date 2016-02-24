@@ -101,10 +101,13 @@ public class MainScreen extends javax.swing.JFrame {
         setBackground(new java.awt.Color(153, 204, 255));
         setResizable(false);
 
+        txtEmail.setNextFocusableComponent(txtPassword);
+
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/uimessages_iw"); // NOI18N
         btnLogin.setText(bundle.getString("btnLogin")); // NOI18N
         btnLogin.setMaximumSize(new java.awt.Dimension(100, 40));
         btnLogin.setMinimumSize(new java.awt.Dimension(100, 40));
+        btnLogin.setNextFocusableComponent(btnForgotPassword);
         btnLogin.setPreferredSize(new java.awt.Dimension(100, 40));
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -135,6 +138,7 @@ public class MainScreen extends javax.swing.JFrame {
         btnForgotPassword.setForeground(new java.awt.Color(51, 51, 255));
         btnForgotPassword.setText(bundle.getString("btnForgotPassword")); // NOI18N
         btnForgotPassword.setBorderPainted(false);
+        btnForgotPassword.setNextFocusableComponent(btnSignup);
         btnForgotPassword.setOpaque(false);
         btnForgotPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -173,27 +177,28 @@ public class MainScreen extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(444, 606, Short.MAX_VALUE)
+                .addGap(444, 641, Short.MAX_VALUE)
                 .addComponent(btnSignup))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(623, Short.MAX_VALUE)
-                        .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(11, 11, 11)
-                        .addComponent(btnForgotPassword)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblImageContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtEmail)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblImageContainer)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnForgotPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(277, 277, 277))
+                .addGap(293, 293, 293))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -384,6 +389,7 @@ public class MainScreen extends javax.swing.JFrame {
         btnMenuExit.setText(LocalizationUtil.localizedResourceBundle.getString("btnExit"));
         menuHelp.setText(LocalizationUtil.localizedResourceBundle.getString("menuHelp"));
         btnHelpAbout.setText(LocalizationUtil.localizedResourceBundle.getString("helpAbout"));
+        btnForgotPassword.setText(LocalizationUtil.localizedResourceBundle.getString("btnForgotPassword"));
 
     }
 

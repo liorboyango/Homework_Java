@@ -102,10 +102,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         btnLanguage = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
-        menuAdd = new javax.swing.JMenu();
-        btnMenuAddUser = new javax.swing.JMenuItem();
-        btnMenuAddTeacher = new javax.swing.JMenuItem();
-        btnMenuAddTask = new javax.swing.JMenuItem();
+        btnMenuEditProfile = new javax.swing.JMenuItem();
         btnMenuLogout = new javax.swing.JMenuItem();
         btnMenuExit = new javax.swing.JMenuItem();
         menuHelp = new javax.swing.JMenu();
@@ -349,33 +346,13 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
 
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
-        menuAdd.setText(bundle.getString("menuAdd")); // NOI18N
-
-        btnMenuAddUser.setText(bundle.getString("userKey")); // NOI18N
-        btnMenuAddUser.addActionListener(new java.awt.event.ActionListener() {
+        btnMenuEditProfile.setText(bundle.getString("btnEditProfile")); // NOI18N
+        btnMenuEditProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMenuAddUserActionPerformed(evt);
+                btnMenuEditProfileActionPerformed(evt);
             }
         });
-        menuAdd.add(btnMenuAddUser);
-
-        btnMenuAddTeacher.setText(bundle.getString("teacherKey")); // NOI18N
-        btnMenuAddTeacher.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMenuAddTeacherActionPerformed(evt);
-            }
-        });
-        menuAdd.add(btnMenuAddTeacher);
-
-        btnMenuAddTask.setText(bundle.getString("taskKey")); // NOI18N
-        btnMenuAddTask.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMenuAddTaskActionPerformed(evt);
-            }
-        });
-        menuAdd.add(btnMenuAddTask);
-
-        menuMenu.add(menuAdd);
+        menuMenu.add(btnMenuEditProfile);
 
         btnMenuLogout.setText(bundle.getString("btnLogout")); // NOI18N
         btnMenuLogout.addActionListener(new java.awt.event.ActionListener() {
@@ -453,45 +430,6 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         MainScreen mainMenuTest = new MainScreen();
         this.dispose();
     }//GEN-LAST:event_btnMenuLogoutActionPerformed
-
-    private void btnMenuAddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuAddUserActionPerformed
-        String email = JOptionPane.showInputDialog(LocalizationUtil.localizedResourceBundle.getString("enterUserEmail"));
-        if (email == null) {
-            return;
-        }
-        HashSet<User> allUsers = new HashSet<>();
-        allUsers = currentUser.getAllUsers(-1);
-        for (User u : allUsers) {
-            if (u.getEmail().equals(email) && u.getClassID() == currentUser.getClassID()) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errUserAlreadyInGroup"), 3000);
-                toastMessage.setVisible(true);
-                return;
-
-            } else if (u.getEmail().equals(email) && u.getUserType() != 3) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errUserIsTeacherOrAdmin"), 3000);
-                toastMessage.setVisible(true);
-                return;
-            } else if (u.getEmail().equals(email) && u.getUserType() == 3) {
-                if (currentUser.addUserToGroup(u)) {
-                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("userAddedToGroupSucc"), 3000);
-                    toastMessage.setVisible(true);
-                    return;
-                } else {
-                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("userAddedToGroupFail"), 3000);
-                    toastMessage.setVisible(true);
-                    return;
-                }
-            }
-        }
-        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errNoUserWasFound"), 3000);
-        toastMessage.setVisible(true);
-
-    }//GEN-LAST:event_btnMenuAddUserActionPerformed
-
-    private void btnMenuAddTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuAddTaskActionPerformed
-        AddNewTaskPopUp newTaskPopUp = new AddNewTaskPopUp(currentUser);
-        this.dispose();
-    }//GEN-LAST:event_btnMenuAddTaskActionPerformed
 
     private void btnSuggestSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuggestSolutionActionPerformed
 
@@ -572,38 +510,6 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     private void btnMarkTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarkTaskActionPerformed
         markTask();
     }//GEN-LAST:event_btnMarkTaskActionPerformed
-
-    private void btnMenuAddTeacherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuAddTeacherActionPerformed
-        String email = JOptionPane.showInputDialog(LocalizationUtil.localizedResourceBundle.getString("enterTeacherEmail"));
-        if (email == null) {
-            return;
-        }
-        HashSet<User> allUsers = new HashSet<>();
-        allUsers = currentUser.getAllUsers(-1);
-        for (User u : allUsers) {
-            if (u.getEmail().equals(email) && u.getClassID() == currentUser.getClassID()) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errTeacherAlreadyInGroup"), 3000);
-                toastMessage.setVisible(true);
-                return;
-            } else if (u.getEmail().equals(email) && u.getUserType() != 2) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errUserIsNotTeacher"), 3000);
-                toastMessage.setVisible(true);
-                return;
-            } else if (u.getEmail().equals(email) && u.getUserType() == 2) {
-                if (currentUser.addUserToGroup(u)) {
-                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherAddedToGroupSucc"), 3000);
-                    toastMessage.setVisible(true);
-                    return;
-                } else {
-                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherAddedToGroupFail"), 3000);
-                    toastMessage.setVisible(true);
-                    return;
-                }
-            }
-        }
-        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errNoTeacherWasFound"), 3000);
-        toastMessage.setVisible(true);
-    }//GEN-LAST:event_btnMenuAddTeacherActionPerformed
 
     private void showOrHideDoneTasksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showOrHideDoneTasksActionPerformed
         setTasksTable();
@@ -791,6 +697,8 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
             Language = "en";
         } else if (Language.equals("en")) {
             Language = "iw";
+        } else {
+            Language = LocalizationUtil.localizedResourceBundle.getLocale().getLanguage();
         }
         LocalizationUtil.localizedResourceBundle = ResourceBundle.getBundle("resources.uimessages", new Locale(Language));
         updateCaptions();
@@ -799,6 +707,11 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     private void btnHelpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHelpAboutActionPerformed
         AboutPopUp aboutPopUp = new AboutPopUp();
     }//GEN-LAST:event_btnHelpAboutActionPerformed
+
+    private void btnMenuEditProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuEditProfileActionPerformed
+        EditProfile editProfile = new EditProfile(currentUser);
+        this.dispose();
+    }//GEN-LAST:event_btnMenuEditProfileActionPerformed
 
     private void loadUsersList() {
         users.clear();
@@ -992,12 +905,9 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         btnRemoveUser.setText(LocalizationUtil.localizedResourceBundle.getString("btnRemoveUser"));
         btnRemoveTeacher.setText(LocalizationUtil.localizedResourceBundle.getString("btnRemoveTeacher"));
         menuMenu.setText(LocalizationUtil.localizedResourceBundle.getString("menuMenu"));
-        menuAdd.setText(LocalizationUtil.localizedResourceBundle.getString("menuAdd"));
         menuHelp.setText(LocalizationUtil.localizedResourceBundle.getString("menuHelp"));
         btnHelpAbout.setText(LocalizationUtil.localizedResourceBundle.getString("helpAbout"));
-        btnMenuAddUser.setText(LocalizationUtil.localizedResourceBundle.getString("userKey"));
-        btnMenuAddTeacher.setText(LocalizationUtil.localizedResourceBundle.getString("teacherKey"));
-        btnMenuAddTask.setText(LocalizationUtil.localizedResourceBundle.getString("taskKey"));
+        btnMenuEditProfile.setText(LocalizationUtil.localizedResourceBundle.getString("btnEditProfile"));
         btnMenuExit.setText(LocalizationUtil.localizedResourceBundle.getString("btnExit"));
         btnMenuLogout.setText(LocalizationUtil.localizedResourceBundle.getString("btnLogout"));
         btnVote.setText(LocalizationUtil.localizedResourceBundle.getString("btnVoteVote"));
@@ -1198,9 +1108,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     private javax.swing.JMenuItem btnHelpAbout;
     private javax.swing.JButton btnLanguage;
     private javax.swing.JButton btnMarkTask;
-    private javax.swing.JMenuItem btnMenuAddTask;
-    private javax.swing.JMenuItem btnMenuAddTeacher;
-    private javax.swing.JMenuItem btnMenuAddUser;
+    private javax.swing.JMenuItem btnMenuEditProfile;
     private javax.swing.JMenuItem btnMenuExit;
     private javax.swing.JMenuItem btnMenuLogout;
     private javax.swing.JButton btnRemoveTeacher;
@@ -1215,7 +1123,6 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     protected javax.swing.JLabel lblWelcome;
-    private javax.swing.JMenu menuAdd;
     private javax.swing.JMenu menuHelp;
     private javax.swing.JMenu menuMenu;
     protected javax.swing.JCheckBox showOrHideDoneTasks;

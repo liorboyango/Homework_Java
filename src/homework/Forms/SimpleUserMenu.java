@@ -82,6 +82,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         tasksTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
+        btnMenuEditProfile = new javax.swing.JMenuItem();
         btnMenuLogout = new javax.swing.JMenuItem();
         btnMenuExit = new javax.swing.JMenuItem();
         menuHelp = new javax.swing.JMenu();
@@ -168,6 +169,14 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         jScrollPane4.setViewportView(tasksTable);
 
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
+
+        btnMenuEditProfile.setText(bundle.getString("btnEditProfile")); // NOI18N
+        btnMenuEditProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMenuEditProfileActionPerformed(evt);
+            }
+        });
+        menuMenu.add(btnMenuEditProfile);
 
         btnMenuLogout.setText(bundle.getString("btnLogout")); // NOI18N
         btnMenuLogout.addActionListener(new java.awt.event.ActionListener() {
@@ -392,6 +401,8 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
             Language = "en";
         } else if (Language.equals("en")) {
             Language = "iw";
+        } else {
+            Language = LocalizationUtil.localizedResourceBundle.getLocale().getLanguage();
         }
         LocalizationUtil.localizedResourceBundle = ResourceBundle.getBundle("resources.uimessages", new Locale(Language));
         updateCaptions();
@@ -400,6 +411,11 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
     private void btnHelpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHelpAboutActionPerformed
         AboutPopUp aboutPopUp = new AboutPopUp();
     }//GEN-LAST:event_btnHelpAboutActionPerformed
+
+    private void btnMenuEditProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuEditProfileActionPerformed
+        EditProfile editProfile = new EditProfile(currentUser);
+        this.dispose();
+    }//GEN-LAST:event_btnMenuEditProfileActionPerformed
 
     private void refreshSolutions() {
         localSolutions = currentUser.getSolutions();
@@ -549,6 +565,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         menuHelp.setText(LocalizationUtil.localizedResourceBundle.getString("menuHelp"));
         btnHelpAbout.setText(LocalizationUtil.localizedResourceBundle.getString("helpAbout"));
         btnMenuLogout.setText(LocalizationUtil.localizedResourceBundle.getString("btnLogout"));
+        btnMenuEditProfile.setText(LocalizationUtil.localizedResourceBundle.getString("btnEditProfile"));
         btnVote.setText(LocalizationUtil.localizedResourceBundle.getString("btnVoteVote"));
         btnSuggestSolution.setText(LocalizationUtil.localizedResourceBundle.getString("btnSuggestSolutionSuggest"));
         showOrHideDoneTasks.setText(LocalizationUtil.localizedResourceBundle.getString("chbShowOrHideDoneTasks"));
@@ -701,6 +718,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
     private javax.swing.JMenuItem btnHelpAbout;
     private javax.swing.JButton btnLanguage;
     private javax.swing.JButton btnMarkTask;
+    private javax.swing.JMenuItem btnMenuEditProfile;
     private javax.swing.JMenuItem btnMenuExit;
     private javax.swing.JMenuItem btnMenuLogout;
     private javax.swing.JButton btnSuggestSolution;
