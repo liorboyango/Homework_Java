@@ -37,6 +37,7 @@ public class EditProfile extends javax.swing.JFrame {
     private String userEmail = "";
     private int passwordStrength = 0;
     private boolean changePassword = false;
+    private boolean adminChangeUserType = false;
 
     public EditProfile(User user) {
         initComponents();
@@ -106,7 +107,6 @@ public class EditProfile extends javax.swing.JFrame {
     private void initComponents() {
 
         txtUsername = new javax.swing.JTextField();
-        txtCurrentPassword = new javax.swing.JTextField();
         btnEdit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         txtPassword = new javax.swing.JPasswordField();
@@ -117,6 +117,7 @@ public class EditProfile extends javax.swing.JFrame {
         lblPasswordDefinition = new javax.swing.JLabel();
         lblUsernameDefinition = new javax.swing.JLabel();
         lblImageContainer = new javax.swing.JLabel();
+        txtCurrentPassword = new javax.swing.JPasswordField();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
         btnMenuExit = new javax.swing.JMenuItem();
@@ -217,23 +218,27 @@ public class EditProfile extends javax.swing.JFrame {
                         .addComponent(lblImageContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(175, 175, 175)
-                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lblUsernameDefinition, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCurrentPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtRePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblPasswordDefinition, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblPasswordStrength, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(126, 126, 126)
-                                .addComponent(cmbUserType, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 105, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(175, 175, 175)
+                                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(lblUsernameDefinition, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtRePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblPasswordDefinition, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(lblPasswordStrength, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(126, 126, 126)
+                                        .addComponent(cmbUserType, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtCurrentPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 105, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -342,13 +347,19 @@ public class EditProfile extends javax.swing.JFrame {
         } else if (cmbUserType.getSelectedItem().toString().equals(LocalizationUtil.localizedResourceBundle.getString("adminKey"))) {
             userType = 1;
         }
-        if(tempUserType==1 && userType > tempUserType)  //if admin tries to become teacher or simple user
-            if(isOnlyAdmin()){  //if admin is the only admin in the group
+        adminChangeUserType = true;
+        if(tempUserType==1 && userType > tempUserType){  //if admin tries to become teacher or simple user
+          //  if(isOnlyAdmin()){  //if admin is the only admin in the group
+            if(currentAdminUser.getAllUsers(currentAdminUser.getClassID()).size()>1){   //if current admin is the only user in the group
                 JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errAdminRemove"));
                 cmbUserType.requestFocus();
                 userType=tempUserType;
                 return;
             }
+        }else if(tempUserType==1 && userType == tempUserType){
+            adminChangeUserType = false;
+        }
+        
                 
         Edit();
     }//GEN-LAST:event_btnEditActionPerformed
@@ -445,6 +456,9 @@ public class EditProfile extends javax.swing.JFrame {
     }//GEN-LAST:event_btnHelpAboutActionPerformed
 
     private void Edit() {
+        int classID=0;
+        if(!adminChangeUserType)
+            classID=-1;
         String username = txtUsername.getText();
         String password = txtCurrentPassword.getText();
         if (changePassword) {
@@ -453,7 +467,7 @@ public class EditProfile extends javax.swing.JFrame {
         switch (userType) {
             case 1:
                 System.out.println("Admin editing profile");
-                if (currentAdminUser.editUser(userEmail, username, password, userType)) {
+                if (currentAdminUser.editUser(userEmail, username, password, userType, classID)) {
                     ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editProfileSucc"), 3000);
                     toastMessage.setVisible(true);
                     AdminUserMenu adminUserMenu = new AdminUserMenu(userEmail, password);
@@ -465,7 +479,7 @@ public class EditProfile extends javax.swing.JFrame {
                 break;
             case 2:
                 System.out.println("Teacher editing profile");
-                if (currentTeacherUser.editUser(userEmail, username, password, userType)) {
+                if (currentTeacherUser.editUser(userEmail, username, password, userType, classID)) {
                     ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editProfileSucc"), 3000);
                     toastMessage.setVisible(true);
                     TeacherUserMenu teacherUserMenu = new TeacherUserMenu(userEmail, password);
@@ -479,7 +493,7 @@ public class EditProfile extends javax.swing.JFrame {
 
             case 3:
                 System.out.println("SimpleUser editing profile");
-                if (currentSimpleUser.editUser(userEmail, username, password, userType)) {
+                if (currentSimpleUser.editUser(userEmail, username, password, userType, classID)) {
                     ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editProfileSucc"), 3000);
                     toastMessage.setVisible(true);
                     SimpleUserMenu simpleUserMenu = new SimpleUserMenu(userEmail, password);
@@ -533,7 +547,7 @@ public class EditProfile extends javax.swing.JFrame {
 
     }
 
-    private boolean isOnlyAdmin(){
+    private boolean isOnlyAdmin(){  //will be used when multiple admins will be available
         for(User u : currentAdminUser.getAllUsers(currentAdminUser.getClassID())){
             if(!u.getEmail().equals(currentAdminUser.getEmail()) && u.getUserType()==1)
                 return false;
@@ -590,7 +604,7 @@ public class EditProfile extends javax.swing.JFrame {
     private javax.swing.JLabel lblUsernameDefinition;
     private javax.swing.JMenu menuHelp;
     private javax.swing.JMenu menuMenu;
-    private javax.swing.JTextField txtCurrentPassword;
+    private javax.swing.JPasswordField txtCurrentPassword;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JPasswordField txtRePassword;
     private javax.swing.JTextField txtUsername;

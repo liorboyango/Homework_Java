@@ -285,9 +285,14 @@ public abstract class User {
         }
     }   //create the user in DB
 
-    public boolean editUser(String email, String username, String password, int userType) {
+    public boolean editUser(String email, String username, String password, int userType, int classID) {
+        if (classID == -1) {
+            classID = getClassID();
+        } else {
+            classID = 0;
+        }
         try {
-            if (DataBase.getInstance().editUser(email, username, password, userType)) {
+            if (DataBase.getInstance().editUser(email, username, password, userType, classID)) {
                 setUsername(username);
                 setPassword(password);
                 setUserType(userType);

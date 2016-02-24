@@ -20,9 +20,9 @@ public class DataBase {
     private static DataBase instance = null;
 
     /*       TOGGLE TO THESE IF ONLINE:         */
-    //   static final String jdbcUrl = "jdbc:mysql://sql4.freesqldatabase.com:3306/sql4103014?useUnicode=yes&characterEncoding=UTF-8";
-    //   static final String jdbcUser = "sql4103014";
-    //   static final String jdbcPassword = "KcqdZxYZg1";
+//       static final String jdbcUrl = "jdbc:mysql://sql4.freesqldatabase.com:3306/sql4103014?useUnicode=yes&characterEncoding=UTF-8";
+//       static final String jdbcUser = "sql4103014";
+//       static final String jdbcPassword = "KcqdZxYZg1";
 
     /*                                                          */
  /*       TOGGLE TO THESE IF OFFLINE (MySQL WorkBench):     */
@@ -270,7 +270,7 @@ public class DataBase {
         if (!(user == null)) {
             PreparedStatement pStatement = null;
             Connection connection = null;
-            String queryUsers = "INSERT INTO Users VALUES (?,?,?,?,?,?,?)";
+            String queryUsers = "INSERT INTO Users VALUES (?,?,?,?,?)";
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 connection
@@ -286,8 +286,6 @@ public class DataBase {
                 } else {
                     pStatement.setInt(5, 0);
                 }
-                pStatement.setString(6, "");
-                pStatement.setString(7, "");
 
                 int resultSet = pStatement.executeUpdate();
 
@@ -318,10 +316,10 @@ public class DataBase {
         return false;
     }
 
-    public boolean editUser(String email, String username, String password, int userType) throws SQLException{
+    public boolean editUser(String email, String username, String password, int userType, int classID) throws SQLException{
             PreparedStatement pStatement = null;
             Connection connection = null;
-            String queryUsers = "UPDATE Users SET Username = ? , Password = ? , UserType = ? , ClassID = 0 WHERE email = ?";
+            String queryUsers = "UPDATE Users SET Username = ? , Password = ? , UserType = ? , ClassID = ? WHERE email = ?";
 
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -332,7 +330,10 @@ public class DataBase {
                 pStatement.setString(1, username);
                 pStatement.setString(2, password);
                 pStatement.setInt(3, userType);
-                pStatement.setString(4, email);
+                pStatement.setInt(4, classID);
+                if(classID==0&&userType==1) //if user is becoming admin - set classID to max +1, else classID is either 0 or previous classID
+                   pStatement.setInt(4, getMaximumUserClassID()+1); 
+                pStatement.setString(5, email);
                 int resultSet = pStatement.executeUpdate();
 
                 if (resultSet > 0) {
