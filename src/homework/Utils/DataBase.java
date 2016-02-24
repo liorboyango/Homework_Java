@@ -8,10 +8,7 @@ import homework.Users.TeacherUser;
 import homework.Users.User;
 import java.util.HashSet;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DataBase {
 

@@ -14,42 +14,18 @@ import edu.vt.middleware.password.UppercaseCharacterRule;
 import edu.vt.middleware.password.WhitespaceRule;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.validator.EmailValidator;
 
 public class InputValidation {
 
     public static boolean isValidEmail(String email) {
-        if (!email.contains("@")) {
-            return false;
+        EmailValidator validator = EmailValidator.getInstance();
+        if (validator.isValid(email)) {
+            System.out.println("Valid Email");
+            return true;
         }
-        if (!email.contains(".")) {
-            return false;
-        }
-        if (!(email.split("@")[0].length() > 0)) {
-            return false;
-        }
-        if (email.split("@")[0].contains("@") || email.split("@")[1].contains("@")) {
-            return false;
-        }
-        /*   if (email.split(".")[0].contains(".") || email.split(".")[1].contains(".")) {
-            return false;
-        }
-        if (!(email.split(".")[0].contains("@"))) {
-            return false;
-        }
-        if (!(email.split(".")[1].length() > 0)) {
-            return false;
-        }
-        if (!(email.split(".")[0].length() > 0)) {
-            return false;
-        }*/
-        if (!(email.split("@")[0].length() > 0)) {
-            return false;
-        }
-        if (!(email.split("@")[1].length() > 0)) {
-            return false;
-        }
-        return true;
-
+        System.out.println("Invalid Email");
+        return false;
     }
 
     public static boolean isValidPassword(String password) {
@@ -65,14 +41,14 @@ public class InputValidation {
         usernameRule.getRules().add(new LowercaseCharacterRule(1));
         usernameRule.getRules().add(new UppercaseCharacterRule(1));
         usernameRule.setNumberOfCharacteristics(1);
-     
+
         List<Rule> usernameRuleList = new ArrayList<Rule>();
         usernameRuleList.add(usernameLengthRule);
         usernameRuleList.add(usernameRule);
-        
+
         PasswordData usernameData = new PasswordData(new Password(username));
         PasswordValidator validator = new PasswordValidator(usernameRuleList);
-        
+
         RuleResult result = validator.validate(usernameData);
         if (result.isValid()) {
             System.out.println("Valid username");
