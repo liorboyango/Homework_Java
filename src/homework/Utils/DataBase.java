@@ -799,6 +799,49 @@ public class DataBase {
 
     }
 
+    public boolean resetPassword(String email, String password) throws SQLException {
+        PreparedStatement pStatement = null;
+            Connection connection = null;
+            String queryUsers = "UPDATE Users SET Password = ? WHERE email = ?;";
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                connection
+                        = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
+
+                pStatement = connection.prepareStatement(queryUsers);
+                pStatement.setString(1, password);
+                pStatement.setString(2, email);
+
+                int resultSet = pStatement.executeUpdate();
+
+                if (resultSet > 0) {
+
+                    System.out.println("Successfuly changed password");
+                    return true;
+                } else {
+                    System.out.println("Failed to change password");
+                    return false;
+
+                }
+            } catch (SQLException sqle) {
+                System.out.println("Failed to change password");
+                sqle.printStackTrace();
+                System.out.println("SQLException: " + sqle.getMessage());
+                System.out.println("Vendor Error: " + sqle.getErrorCode());
+                return false;
+            } catch (ClassNotFoundException e) {
+                System.out.println("Failed to change password");
+                e.printStackTrace();
+                return false;
+            } finally {
+                pStatement.close();		// close statement and resultSet
+                connection.close();
+                System.out.println("resetPassword connection closed");
+            }
+
+        }
+
     /**
      ************************************Manage*Solutions*********************************
      */

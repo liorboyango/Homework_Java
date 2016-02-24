@@ -2,12 +2,17 @@ package homework.Forms;
 
 import homework.Utils.DataBase;
 import homework.Utils.InputValidation;
+import homework.Utils.ToastMessage;
+import homework.Utils.sendEmail;
 import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import org.jdesktop.xswingx.PromptSupport;
@@ -84,6 +89,7 @@ public class MainScreen extends javax.swing.JFrame {
         txtPassword = new javax.swing.JPasswordField();
         btnLanguage = new javax.swing.JButton();
         lblImageContainer = new javax.swing.JLabel();
+        btnForgotPassword = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
         btnMenuExit = new javax.swing.JMenuItem();
@@ -125,6 +131,17 @@ public class MainScreen extends javax.swing.JFrame {
 
         lblImageContainer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/login.png"))); // NOI18N
 
+        btnForgotPassword.setBackground(new java.awt.Color(255, 255, 255));
+        btnForgotPassword.setForeground(new java.awt.Color(51, 51, 255));
+        btnForgotPassword.setText(bundle.getString("btnForgotPassword")); // NOI18N
+        btnForgotPassword.setBorderPainted(false);
+        btnForgotPassword.setOpaque(false);
+        btnForgotPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnForgotPasswordActionPerformed(evt);
+            }
+        });
+
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
         btnMenuExit.setText(bundle.getString("btnExit")); // NOI18N
@@ -164,18 +181,19 @@ public class MainScreen extends javax.swing.JFrame {
                         .addContainerGap(623, Short.MAX_VALUE)
                         .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(277, 277, 277)
-                                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(139, 139, 139)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblImageContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtEmail)
-                                    .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(11, 11, 11)
+                        .addComponent(btnForgotPassword)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblImageContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtEmail)
+                            .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(277, 277, 277))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,7 +206,9 @@ public class MainScreen extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnForgotPassword))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25)
@@ -225,6 +245,39 @@ public class MainScreen extends javax.swing.JFrame {
     private void btnHelpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHelpAboutActionPerformed
         AboutPopUp aboutPopUp = new AboutPopUp();
     }//GEN-LAST:event_btnHelpAboutActionPerformed
+
+    private void btnForgotPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForgotPasswordActionPerformed
+        if (!InputValidation.isValidEmail(txtEmail.getText())) {    //check for valid email input
+            JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errInvalidEmail"));
+            txtEmail.requestFocus();
+            return;
+        }
+        if (!DataBase.getInstance().isEmailExist(txtEmail.getText())) { //check email is in DB
+            JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errNoSuchEmail"));
+            txtEmail.requestFocus();
+            return;
+        }
+        String message=LocalizationUtil.localizedResourceBundle.getString("msgSendEmailBody")+txtEmail.getText();
+        String title = LocalizationUtil.localizedResourceBundle.getString("msgSendEmailTitle");
+        String[] buttons={LocalizationUtil.localizedResourceBundle.getString("okKey"), LocalizationUtil.localizedResourceBundle.getString("btnCancel")};
+        //confirm prompt
+        if (JOptionPane.showOptionDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.INFORMATION_MESSAGE, null, buttons,"default") == 0) {
+            try {
+                if (sendEmail.send(txtEmail.getText())) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("msgEmailWasSent"), 3000);
+                    toastMessage.setVisible(true);
+                } else {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("msgEmailWasNotSent"), 3000);
+                    toastMessage.setVisible(true);
+                }
+            } catch (UnsupportedEncodingException ex) {
+                ex.printStackTrace();
+                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("msgEmailWasNotSent"), 3000);
+                toastMessage.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_btnForgotPasswordActionPerformed
 
     public static void main(String args[]) {
 
@@ -336,6 +389,7 @@ public class MainScreen extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnForgotPassword;
     private javax.swing.JMenuItem btnHelpAbout;
     private javax.swing.JButton btnLanguage;
     private javax.swing.JButton btnLogin;

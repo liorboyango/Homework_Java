@@ -1,6 +1,6 @@
 package homework.Forms;
 
-import homework.Utils.sendEmail;
+import homework.Utils.MailTo;
 import java.awt.ComponentOrientation;
 import java.awt.Desktop;
 import java.awt.Image;
@@ -184,7 +184,7 @@ public class AboutPopUp extends javax.swing.JFrame {
 
     private void btnEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmailActionPerformed
         try {
-            sendEmail.mailto(Arrays.asList("master010590@gmail.com"), "Homework App",
+            MailTo.mailto(Arrays.asList("master010590@gmail.com"), "Homework App",
                     "");
         } catch (IOException ex) {
             ex.printStackTrace();
