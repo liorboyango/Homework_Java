@@ -36,7 +36,7 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
     private DefaultListModel solutionsListModel = new DefaultListModel();
     private ArrayList<String> users = new ArrayList<>();
     private ArrayList<String> solutions = new ArrayList<>();
-    private final Color markGreen = new Color(155, 255, 155);
+    private final Color approvedColor = new Color(0, 102, 0);
     private final Color voteBlue = new Color(0, 153, 153);
     private final Color voteRed = new Color(255, 101, 101);
     private HashSet<Solution> localSolutions = new HashSet<Solution>();
@@ -914,7 +914,7 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
             solutionRow.setBackground(list.getBackground());
         }
         if (value.toString().endsWith(" approved")) {
-            solutionRow.setForeground(markGreen);
+            solutionRow.setForeground(approvedColor);
             solutionRow.setText(value.toString().split(" approved")[0]);
         } else {
             solutionRow.setText(value.toString());
