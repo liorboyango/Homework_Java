@@ -19,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -737,6 +738,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        //add email to tooltip
         JLabel solutionRow;
         solutionRow = new JLabel();
         solutionRow.setFont(new java.awt.Font("Arial", 3, 14));
@@ -766,7 +768,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         if (!e.getValueIsAdjusting()) {
             if (e.getSource() == solutionsList) {
                 btnSuggestSolution.setEnabled(false);
-
+                
                 String solutionEmail;
                 if (parseSolutionEmail() == null) {
                     return;

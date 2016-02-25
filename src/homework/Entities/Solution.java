@@ -9,6 +9,7 @@ public class Solution {
     private int TaskID;
     private int votes;
     private String UserEmail;
+    private String Username;
     private int ClassID;
     private boolean statusApproved;
 
@@ -77,6 +78,14 @@ public class Solution {
         this.UserEmail = UserEmail;
     }
 
+    public String getUsername() {
+        return Username;
+    }
+
+    public void setUsername(String Username) {
+        this.Username = Username;
+    }
+
     public int getClassID() {
         return ClassID;
     }
@@ -95,21 +104,23 @@ public class Solution {
 
     @Override
     public String toString() {
-        return LocalizationUtil.localizedResourceBundle.getString("lblSolutionBy")+ getUserEmail() + ": *** " +
-                getSolutionContent() + " *** " +LocalizationUtil.localizedResourceBundle.getString("lblSolutionVotes") + getVotes();
+        return LocalizationUtil.localizedResourceBundle.getString("lblSolutionBy") + getUserEmail() + ": *** "
+                + getSolutionContent() + " *** " + LocalizationUtil.localizedResourceBundle.getString("lblSolutionVotes") + getVotes();
     }
-    
+
     @Override
-    public boolean equals(Object obj){
-        if(!(obj instanceof Solution))
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Solution)) {
             return false;
-        if(getSolutionID()==((Solution)obj).getSolutionID())
+        }
+        if (getSolutionID() == ((Solution) obj).getSolutionID()) {
             return true;
+        }
         return false;
     }
-    
+
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return getSolutionID();
     }
 
