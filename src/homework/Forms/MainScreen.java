@@ -25,7 +25,7 @@ public class MainScreen extends javax.swing.JFrame {
 
     public MainScreen() {
         initComponents();
-
+        MainScreenPBar.setVisible(false);
         updateCaptions();
         setIconImage(imgIcon.getImage());
         setVisible(true);
@@ -88,6 +88,7 @@ public class MainScreen extends javax.swing.JFrame {
         btnLanguage = new javax.swing.JButton();
         lblImageContainer = new javax.swing.JLabel();
         btnForgotPassword = new javax.swing.JButton();
+        MainScreenPBar = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
         btnMenuExit = new javax.swing.JMenuItem();
@@ -144,6 +145,9 @@ public class MainScreen extends javax.swing.JFrame {
             }
         });
 
+        MainScreenPBar.setIndeterminate(true);
+        MainScreenPBar.setString("");
+
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
         btnMenuExit.setText(bundle.getString("btnExit")); // NOI18N
@@ -195,8 +199,13 @@ public class MainScreen extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(293, 293, 293))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(293, 293, 293))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(MainScreenPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(271, 271, 271))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,7 +223,9 @@ public class MainScreen extends javax.swing.JFrame {
                     .addComponent(btnForgotPassword))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(MainScreenPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
                 .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -260,12 +271,12 @@ public class MainScreen extends javax.swing.JFrame {
             txtEmail.requestFocus();
             return;
         }
-        String message=LocalizationUtil.localizedResourceBundle.getString("msgSendEmailBody")+txtEmail.getText();
+        String message = LocalizationUtil.localizedResourceBundle.getString("msgSendEmailBody") + txtEmail.getText();
         String title = LocalizationUtil.localizedResourceBundle.getString("msgSendEmailTitle");
-        String[] buttons={LocalizationUtil.localizedResourceBundle.getString("okKey"), LocalizationUtil.localizedResourceBundle.getString("btnCancel")};
+        String[] buttons = {LocalizationUtil.localizedResourceBundle.getString("okKey"), LocalizationUtil.localizedResourceBundle.getString("btnCancel")};
         //confirm prompt
         if (JOptionPane.showOptionDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.INFORMATION_MESSAGE, null, buttons,"default") == 0) {
+                JOptionPane.INFORMATION_MESSAGE, null, buttons, "default") == 0) {
             try {
                 if (sendEmail.send(txtEmail.getText())) {
                     ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("msgEmailWasSent"), 3000);
@@ -312,65 +323,89 @@ public class MainScreen extends javax.swing.JFrame {
     }
 
     private void Login() {
-        System.out.println(txtEmail.getText());
-        if (!InputValidation.isValidEmail(txtEmail.getText())) {
-            JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errInvalidEmail"));
-            txtEmail.requestFocus();
-            return;
-        }
-        if (!InputValidation.isValidPassword(txtPassword.getText())) {
-            JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errInvalidPassword"));
-            txtPassword.requestFocus();
-            return;
-        }
-        int userType = 0;
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                MainScreenPBar.setVisible(true);
+                disableAllButtons(true);
+                System.out.println(txtEmail.getText());
+                if (!InputValidation.isValidEmail(txtEmail.getText())) {
+                    JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errInvalidEmail"));
+                    txtEmail.requestFocus();
+                    MainScreenPBar.setVisible(false);
+                      disableAllButtons(false);
+                    return;
+                }
+                if (!InputValidation.isValidPassword(txtPassword.getText())) {
+                    JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errInvalidPassword"));
+                    txtPassword.requestFocus();
+                    MainScreenPBar.setVisible(false);
+                    disableAllButtons(false);
+                    return;
+                }
+                int userType = 0;
 
-        try {
-            if (DataBase.getInstance().isAdmin(txtEmail.getText(), txtPassword.getText())) {
-                userType = 1;
-            } else if (DataBase.getInstance().isTeacher(txtEmail.getText(), txtPassword.getText())) {
-                userType = 2;
-            } else if (DataBase.getInstance().isSimpleUser(txtEmail.getText(), txtPassword.getText())) {
-                userType = 3;
+                try {
+                    if (DataBase.getInstance().isAdmin(txtEmail.getText(), txtPassword.getText())) {
+                        userType = 1;
+                    } else if (DataBase.getInstance().isTeacher(txtEmail.getText(), txtPassword.getText())) {
+                        userType = 2;
+                    } else if (DataBase.getInstance().isSimpleUser(txtEmail.getText(), txtPassword.getText())) {
+                        userType = 3;
+                    }
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                    System.out.println("Internet Connection Error");
+                    JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errIntenetConnection"));
+                }
+                switch (userType) {
+                    case 0:
+                        System.out.println("Email/Password was wrong, try again");
+                        JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errEmailPasswordWrong"));
+                        break;
+
+                    case 1:
+                        System.out.println("Admin logged in");
+                        AdminUserMenu adminUserMenu = new AdminUserMenu(txtEmail.getText(), txtPassword.getText());
+                        context.dispose();
+                        break;
+
+                    case 2:
+                        System.out.println("Teacher logged in");
+                        TeacherUserMenu teacherUserMenu = new TeacherUserMenu(txtEmail.getText(), txtPassword.getText());
+                        context.dispose();
+                        break;
+
+                    case 3:
+                        System.out.println("SimpleUser logged in");
+                        SimpleUserMenu userMenu = new SimpleUserMenu(txtEmail.getText(), txtPassword.getText());
+                        context.dispose();
+                        break;
+
+                    default:
+                        break;
+                }
+                MainScreenPBar.setVisible(false);
+                disableAllButtons(false);
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.out.println("Internet Connection Error");
-            JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errIntenetConnection"));
-        }
-        switch (userType) {
-            case 0:
-                System.out.println("Email/Password was wrong, try again");
-                JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errEmailPasswordWrong"));
-                break;
+        };
+        t.start();
 
-            case 1:
-                System.out.println("Admin logged in");
-                AdminUserMenu adminUserMenu = new AdminUserMenu(txtEmail.getText(), txtPassword.getText());
-                this.dispose();
-                break;
-
-            case 2:
-                System.out.println("Teacher logged in");
-                TeacherUserMenu teacherUserMenu = new TeacherUserMenu(txtEmail.getText(), txtPassword.getText());
-                this.dispose();
-                break;
-
-            case 3:
-                System.out.println("SimpleUser logged in");
-                SimpleUserMenu userMenu = new SimpleUserMenu(txtEmail.getText(), txtPassword.getText());
-                this.dispose();
-                break;
-
-            default:
-                break;
-        }
     }
 
     private void Signup() {
         SignUpMenu signUpMenu = new SignUpMenu();
         signUpMenu.setVisible(true);
         this.dispose();
+    }
+
+    private void disableAllButtons(boolean disable) {
+        btnForgotPassword.setEnabled(!disable);
+        btnHelpAbout.setEnabled(!disable);
+        btnLanguage.setEnabled(!disable);
+        btnLogin.setEnabled(!disable);
+        btnMenuExit.setEnabled(!disable);
+        btnSignup.setEnabled(!disable);
     }
 
     private void updateCaptions() {
@@ -393,6 +428,7 @@ public class MainScreen extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar MainScreenPBar;
     private javax.swing.JButton btnForgotPassword;
     private javax.swing.JMenuItem btnHelpAbout;
     private javax.swing.JButton btnLanguage;
