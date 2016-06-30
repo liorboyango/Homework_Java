@@ -48,7 +48,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
 
     public AdminUserMenu(String email, String password) {
         initComponents();
-
+        AdminUserMenuPBar.setVisible(false);
         //retrieve permisions
         currentUser = currentUser.getUser(email, password);
         System.out.println("got admin priviliges");
@@ -93,6 +93,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         btnEditTask = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tasksTable = new javax.swing.JTable();
+        AdminUserMenuPBar = new javax.swing.JProgressBar();
         internalUsersTab = new javax.swing.JInternalFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         usersList = new javax.swing.JList<>();
@@ -208,6 +209,9 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         });
         jScrollPane4.setViewportView(tasksTable);
 
+        AdminUserMenuPBar.setIndeterminate(true);
+        AdminUserMenuPBar.setString("");
+
         javax.swing.GroupLayout internalTasksTabLayout = new javax.swing.GroupLayout(internalTasksTab.getContentPane());
         internalTasksTab.getContentPane().setLayout(internalTasksTabLayout);
         internalTasksTabLayout.setHorizontalGroup(
@@ -234,7 +238,10 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
                             .addComponent(showOrHideDoneTasks, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(internalTasksTabLayout.createSequentialGroup()
                         .addGap(410, 410, 410)
-                        .addComponent(btnSuggestSolution)))
+                        .addComponent(btnSuggestSolution))
+                    .addGroup(internalTasksTabLayout.createSequentialGroup()
+                        .addGap(377, 377, 377)
+                        .addComponent(AdminUserMenuPBar, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
         internalTasksTabLayout.setVerticalGroup(
@@ -263,7 +270,9 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
                                 .addComponent(btnVote)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSuggestSolution)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(AdminUserMenuPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(bundle.getString("tabTasks"), internalTasksTab); // NOI18N
@@ -1101,6 +1110,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar AdminUserMenuPBar;
     private javax.swing.JButton btnAddTask;
     private javax.swing.JButton btnAddTeacher;
     private javax.swing.JButton btnAddUser;
