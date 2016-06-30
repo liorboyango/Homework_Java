@@ -9,6 +9,8 @@ import homework.Users.User;
 import java.util.HashSet;
 import java.sql.*;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DataBase {
 
@@ -17,16 +19,16 @@ public class DataBase {
     private static DataBase instance = null;
 
     /*       TOGGLE TO THESE IF ONLINE:         */
-//       static final String jdbcUrl = "jdbc:mysql://sql4.freesqldatabase.com:3306/sql4103014?useUnicode=yes&characterEncoding=UTF-8";
-//       static final String jdbcUser = "sql4103014";
-//       static final String jdbcPassword = "KcqdZxYZg1";
+    static final String jdbcUrl = "jdbc:mysql://sql7.freesqldatabase.com:3306/sql7126052?useUnicode=yes&characterEncoding=UTF-8";
+    static final String jdbcUser = "sql7126052";
+    static final String jdbcPassword = "hcw6pfHqNr";
 
     /*                                                          */
  /*       TOGGLE TO THESE IF OFFLINE (MySQL WorkBench):     */
-    static final String jdbcUrl = "jdbc:mysql://localhost:3306/Homework?useUnicode=yes&characterEncoding=UTF-8";
-    static final String jdbcUser = "root";
-    static final String jdbcPassword = "master1590";
-    // static final String jdbcPassword = "";
+//    static final String jdbcUrl = "jdbc:mysql://localhost:3306/Homework?useUnicode=yes&characterEncoding=UTF-8";
+//    static final String jdbcUser = "root";
+//    //static final String jdbcPassword = "master1590";
+//    static final String jdbcPassword = "";
 
     /*                                                                                  */
     public static DataBase getInstance() {
@@ -40,6 +42,7 @@ public class DataBase {
      ************************************Manage*Tasks*********************************
      */
     public boolean addNewTask(String taskName, Date deadline, int classID) throws SQLException {
+
         PreparedStatement pStatement = null;
         Connection connection = null;
         String queryUsers = "Insert into Tasks values (?,?,?,?)";
@@ -56,7 +59,6 @@ public class DataBase {
             pStatement.setInt(4, classID);
 
             int resultSet = pStatement.executeUpdate();
-
             if (resultSet > 0) {
 
                 System.out.println("Successfuly inserted Task");
@@ -75,8 +77,13 @@ public class DataBase {
             e.printStackTrace();
             return false;
         } finally {
-            pStatement.close();		// close statement and resultSet
-            connection.close();
+            try {
+                pStatement.close();		// close statement and resultSet
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
             System.out.println("addNewTask connection closed");
         }
 
@@ -313,51 +320,53 @@ public class DataBase {
         return false;
     }
 
-    public boolean editUser(String email, String username, String password, int userType, int classID) throws SQLException{
-            PreparedStatement pStatement = null;
-            Connection connection = null;
-            String queryUsers = "UPDATE Users SET Username = ? , Password = ? , UserType = ? , ClassID = ? WHERE email = ?";
+    public boolean editUser(String email, String username, String password, int userType, int classID) throws SQLException {
+        PreparedStatement pStatement = null;
+        Connection connection = null;
+        String queryUsers = "UPDATE Users SET Username = ? , Password = ? , UserType = ? , ClassID = ? WHERE email = ?";
 
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                connection
-                        = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection
+                    = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
 
-                pStatement = connection.prepareStatement(queryUsers);
-                pStatement.setString(1, username);
-                pStatement.setString(2, password);
-                pStatement.setInt(3, userType);
-                pStatement.setInt(4, classID);
-                if(classID==0&&userType==1) //if user is becoming admin - set classID to max +1, else classID is either 0 or previous classID
-                   pStatement.setInt(4, getMaximumUserClassID()+1); 
-                pStatement.setString(5, email);
-                int resultSet = pStatement.executeUpdate();
-
-                if (resultSet > 0) {
-                    System.out.println("Successfully Edited User");
-                    return true;
-                } else {
-                    System.out.println("Failed to Edit User");
-                    return false;
-
-                }
-            } catch (SQLException sqle) {
-                System.out.println("Failed to Edit User");
-                sqle.printStackTrace();
-                System.out.println("SQLException: " + sqle.getMessage());
-                System.out.println("Vendor Error: " + sqle.getErrorCode());
-                return false;
-            } catch (ClassNotFoundException e) {
-                System.out.println("Failed to Edit User");
-                e.printStackTrace();
-                return false;
-            } finally {
-                pStatement.close();		// close statement and resultSet
-                connection.close();
-                System.out.println("editUser connection closed");
+            pStatement = connection.prepareStatement(queryUsers);
+            pStatement.setString(1, username);
+            pStatement.setString(2, password);
+            pStatement.setInt(3, userType);
+            pStatement.setInt(4, classID);
+            if (classID == 0 && userType == 1) //if user is becoming admin - set classID to max +1, else classID is either 0 or previous classID
+            {
+                pStatement.setInt(4, getMaximumUserClassID() + 1);
             }
+            pStatement.setString(5, email);
+            int resultSet = pStatement.executeUpdate();
+
+            if (resultSet > 0) {
+                System.out.println("Successfully Edited User");
+                return true;
+            } else {
+                System.out.println("Failed to Edit User");
+                return false;
+
+            }
+        } catch (SQLException sqle) {
+            System.out.println("Failed to Edit User");
+            sqle.printStackTrace();
+            System.out.println("SQLException: " + sqle.getMessage());
+            System.out.println("Vendor Error: " + sqle.getErrorCode());
+            return false;
+        } catch (ClassNotFoundException e) {
+            System.out.println("Failed to Edit User");
+            e.printStackTrace();
+            return false;
+        } finally {
+            pStatement.close();		// close statement and resultSet
+            connection.close();
+            System.out.println("editUser connection closed");
+        }
     }
-    
+
     public boolean addUserToGroup(User user, int classId) throws SQLException {
         if (!(user == null)) {
             PreparedStatement pStatement = null;
@@ -841,46 +850,46 @@ public class DataBase {
 
     public boolean resetPassword(String email, String password) throws SQLException {
         PreparedStatement pStatement = null;
-            Connection connection = null;
-            String queryUsers = "UPDATE Users SET Password = ? WHERE email = ?;";
+        Connection connection = null;
+        String queryUsers = "UPDATE Users SET Password = ? WHERE email = ?;";
 
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                connection
-                        = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection
+                    = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
 
-                pStatement = connection.prepareStatement(queryUsers);
-                pStatement.setString(1, password);
-                pStatement.setString(2, email);
+            pStatement = connection.prepareStatement(queryUsers);
+            pStatement.setString(1, password);
+            pStatement.setString(2, email);
 
-                int resultSet = pStatement.executeUpdate();
+            int resultSet = pStatement.executeUpdate();
 
-                if (resultSet > 0) {
+            if (resultSet > 0) {
 
-                    System.out.println("Successfuly changed password");
-                    return true;
-                } else {
-                    System.out.println("Failed to change password");
-                    return false;
-
-                }
-            } catch (SQLException sqle) {
+                System.out.println("Successfuly changed password");
+                return true;
+            } else {
                 System.out.println("Failed to change password");
-                sqle.printStackTrace();
-                System.out.println("SQLException: " + sqle.getMessage());
-                System.out.println("Vendor Error: " + sqle.getErrorCode());
                 return false;
-            } catch (ClassNotFoundException e) {
-                System.out.println("Failed to change password");
-                e.printStackTrace();
-                return false;
-            } finally {
-                pStatement.close();		// close statement and resultSet
-                connection.close();
-                System.out.println("resetPassword connection closed");
+
             }
-
+        } catch (SQLException sqle) {
+            System.out.println("Failed to change password");
+            sqle.printStackTrace();
+            System.out.println("SQLException: " + sqle.getMessage());
+            System.out.println("Vendor Error: " + sqle.getErrorCode());
+            return false;
+        } catch (ClassNotFoundException e) {
+            System.out.println("Failed to change password");
+            e.printStackTrace();
+            return false;
+        } finally {
+            pStatement.close();		// close statement and resultSet
+            connection.close();
+            System.out.println("resetPassword connection closed");
         }
+
+    }
 
     /**
      ************************************Manage*Solutions*********************************
@@ -1235,6 +1244,11 @@ public class DataBase {
             System.out.println("Internet Connection Error");
             e.printStackTrace();
             return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Connection Error");
+            return false;
+
         } finally {
             statement.close();		// close statement and resultSet
             connection.close();
