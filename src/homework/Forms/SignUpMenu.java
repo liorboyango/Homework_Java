@@ -34,7 +34,7 @@ public class SignUpMenu extends javax.swing.JFrame {
 
     public SignUpMenu() {
         initComponents();
-
+        SignUpPBar.setVisible(false);
         updateCaptions();
 
         setIconImage(imgIcon.getImage());
@@ -89,6 +89,7 @@ public class SignUpMenu extends javax.swing.JFrame {
         lblPasswordDefinition = new javax.swing.JLabel();
         lblUsernameDefinition = new javax.swing.JLabel();
         lblImageContainer = new javax.swing.JLabel();
+        SignUpPBar = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
         btnMenuExit = new javax.swing.JMenuItem();
@@ -150,6 +151,9 @@ public class SignUpMenu extends javax.swing.JFrame {
 
         lblImageContainer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/signup.png"))); // NOI18N
 
+        SignUpPBar.setIndeterminate(true);
+        SignUpPBar.setString("");
+
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
         btnMenuExit.setText(bundle.getString("btnExit")); // NOI18N
@@ -181,35 +185,34 @@ public class SignUpMenu extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(lblImageContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblPasswordStrength, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtRePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnSignup, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblUsernameDefinition, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPasswordDefinition, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblImageContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(132, 132, 132)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(lblPasswordStrength, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(txtRePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(btnSignup, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(lblUsernameDefinition, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblPasswordDefinition, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(132, 132, 132)
-                                .addComponent(cmbUserType, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                                .addComponent(SignUpPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cmbUserType, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,8 +240,13 @@ public class SignUpMenu extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSignup, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23)
-                .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(SignUpPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -422,83 +430,94 @@ public class SignUpMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnHelpAboutActionPerformed
 
     private void Signup() {
-        switch (userType) {
-            case 1:
-                System.out.println("Admin signing up");
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                disableAllButtons(true);
+                SignUpPBar.setVisible(true);
+                switch (userType) {
+                    case 1:
+                        System.out.println("Admin signing up");
 
-                AdminUser adminUser = new AdminUser(txtUsername.getText(), txtPassword.getText(), txtEmail.getText());
-                try {
-                    if (DataBase.getInstance().createUser(adminUser)) {
-                        System.out.println("Successfuly Signed Up");
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupSucc"), 3000);
-                        toastMessage.setVisible(true);
-                        MainScreen mainScreen = new MainScreen();
-                        mainScreen.setVisible(true);
-                        this.dispose();
-                        break;
-                    } else {
-                        System.out.println("Failed To Sign Up");
+                        AdminUser adminUser = new AdminUser(txtUsername.getText(), txtPassword.getText(), txtEmail.getText());
+                        try {
+                            if (DataBase.getInstance().createUser(adminUser)) {
+                                System.out.println("Successfuly Signed Up");
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupSucc"), 3000);
+                                toastMessage.setVisible(true);
+                                MainScreen mainScreen = new MainScreen();
+                                mainScreen.setVisible(true);
+                                context.dispose();
+                                break;
+                            } else {
+                                System.out.println("Failed To Sign Up");
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupFail"), 3000);
+                                toastMessage.setVisible(true);
+                                break;
+                            }
+                        } catch (SQLException sqle) {
+                            sqle.printStackTrace();
+                            break;
+                        }
+
+                    case 2:
+                        System.out.println("Teacher signing up");
+                        TeacherUser teacherUser = new TeacherUser(txtUsername.getText(), txtPassword.getText(), txtEmail.getText());
+                        try {
+                            if (DataBase.getInstance().createUser(teacherUser)) {
+                                System.out.println("Successfuly Signed Up");
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupSucc"), 3000);
+                                toastMessage.setVisible(true);
+                                MainScreen mainScreen = new MainScreen();
+                                mainScreen.setVisible(true);
+                                context.dispose();
+                                break;
+                            } else {
+                                System.out.println("Failed To Sign Up");
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupFail"), 3000);
+                                toastMessage.setVisible(true);
+                                break;
+                            }
+                        } catch (SQLException sqle) {
+                            sqle.printStackTrace();
+                            break;
+                        }
+
+                    case 3:
+                        System.out.println("SimpleUser signing up");
+                        SimpleUser simpleUser = new SimpleUser(txtUsername.getText(), txtPassword.getText(), txtEmail.getText());
+                        try {
+                            if (DataBase.getInstance().createUser(simpleUser)) {
+                                System.out.println("Successfuly Signed Up");
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupSucc"), 3000);
+                                toastMessage.setVisible(true);
+                                MainScreen mainScreen = new MainScreen();
+                                context.dispose();
+                                break;
+                            } else {
+                                System.out.println("Failed To Sign Up");
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupFail"), 3000);
+                                toastMessage.setVisible(true);
+                                break;
+                            }
+                        } catch (SQLException sqle) {
+                            sqle.printStackTrace();
+                            break;
+                        }
+
+                    default:
+                        System.out.println("Error - UserType error");
                         ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupFail"), 3000);
                         toastMessage.setVisible(true);
-                        break;
-                    }
-                } catch (SQLException sqle) {
-                    sqle.printStackTrace();
-                    break;
+                        return;
+
                 }
+                SignUpPBar.setVisible(false);
+                disableAllButtons(false);
+            }
+        };
+        t.start();
 
-            case 2:
-                System.out.println("Teacher signing up");
-                TeacherUser teacherUser = new TeacherUser(txtUsername.getText(), txtPassword.getText(), txtEmail.getText());
-                try {
-                    if (DataBase.getInstance().createUser(teacherUser)) {
-                        System.out.println("Successfuly Signed Up");
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupSucc"), 3000);
-                        toastMessage.setVisible(true);
-                        MainScreen mainScreen = new MainScreen();
-                        mainScreen.setVisible(true);
-                        this.dispose();
-                        break;
-                    } else {
-                        System.out.println("Failed To Sign Up");
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupFail"), 3000);
-                        toastMessage.setVisible(true);
-                        break;
-                    }
-                } catch (SQLException sqle) {
-                    sqle.printStackTrace();
-                    break;
-                }
-
-            case 3:
-                System.out.println("SimpleUser signing up");
-                SimpleUser simpleUser = new SimpleUser(txtUsername.getText(), txtPassword.getText(), txtEmail.getText());
-                try {
-                    if (DataBase.getInstance().createUser(simpleUser)) {
-                        System.out.println("Successfuly Signed Up");
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupSucc"), 3000);
-                        toastMessage.setVisible(true);
-                        MainScreen mainScreen = new MainScreen();
-                        this.dispose();
-                        break;
-                    } else {
-                        System.out.println("Failed To Sign Up");
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupFail"), 3000);
-                        toastMessage.setVisible(true);
-                        break;
-                    }
-                } catch (SQLException sqle) {
-                    sqle.printStackTrace();
-                    break;
-                }
-
-            default:
-                System.out.println("Error - UserType error");
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("signupFail"), 3000);
-                toastMessage.setVisible(true);
-                return;
-
-        }
     }
 
     private boolean isEmailExist(String email) {
@@ -540,6 +559,15 @@ public class SignUpMenu extends javax.swing.JFrame {
 
     }
 
+    private void disableAllButtons(boolean disable) {
+        btnBack.setEnabled(!disable);
+        btnHelpAbout.setEnabled(!disable);
+        btnLanguage.setEnabled(!disable);
+        btnMenuExit.setEnabled(!disable);
+        btnSignup.setEnabled(!disable);
+        cmbUserType.setEnabled(!disable);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -577,6 +605,7 @@ public class SignUpMenu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar SignUpPBar;
     private javax.swing.JButton btnBack;
     private javax.swing.JMenuItem btnHelpAbout;
     private javax.swing.JButton btnLanguage;
