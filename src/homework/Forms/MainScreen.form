@@ -74,7 +74,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="444" pref="641" max="32767" attributes="0"/>
+              <EmptySpace min="444" pref="619" max="32767" attributes="0"/>
               <Component id="btnSignup" min="-2" max="-2" attributes="0"/>
           </Group>
           <Group type="102" attributes="0">
@@ -89,7 +89,7 @@
                           <Component id="txtEmail" min="-2" pref="425" max="-2" attributes="0"/>
                           <Component id="lblImageContainer" alignment="1" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="btnForgotPassword" min="-2" pref="143" max="-2" attributes="0"/>
+                              <Component id="btnForgotPassword" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="txtPassword" min="-2" pref="425" max="-2" attributes="0"/>
                           </Group>
@@ -124,7 +124,7 @@
                   </Group>
                   <Component id="btnSignup" min="-2" pref="26" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="23" max="32767" attributes="0"/>
               <Component id="txtEmail" min="-2" pref="37" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
