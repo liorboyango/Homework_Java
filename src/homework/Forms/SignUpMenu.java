@@ -296,8 +296,14 @@ public class SignUpMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSignupActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        MainScreen mainMenuTest = new MainScreen();
-        this.dispose();
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                MainScreen mainMenuTest = new MainScreen();
+                context.dispose();
+            }
+        };
+        t.start();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnMenuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuExitActionPerformed
@@ -433,8 +439,7 @@ public class SignUpMenu extends javax.swing.JFrame {
         javax.swing.JFrame context = this;
         Thread t = new Thread() {
             public void run() {
-                disableAllButtons(true);
-                SignUpPBar.setVisible(true);
+                setComponentsAvailable(false);
                 switch (userType) {
                     case 1:
                         System.out.println("Admin signing up");
@@ -512,8 +517,8 @@ public class SignUpMenu extends javax.swing.JFrame {
                         return;
 
                 }
-                SignUpPBar.setVisible(false);
-                disableAllButtons(false);
+
+                setComponentsAvailable(true);
             }
         };
         t.start();
@@ -559,13 +564,19 @@ public class SignUpMenu extends javax.swing.JFrame {
 
     }
 
-    private void disableAllButtons(boolean disable) {
-        btnBack.setEnabled(!disable);
-        btnHelpAbout.setEnabled(!disable);
-        btnLanguage.setEnabled(!disable);
-        btnMenuExit.setEnabled(!disable);
-        btnSignup.setEnabled(!disable);
-        cmbUserType.setEnabled(!disable);
+    private void setComponentsAvailable(boolean available) {
+        SignUpPBar.setVisible(!available);
+        btnBack.setEnabled(available);
+        btnHelpAbout.setEnabled(available);
+        btnLanguage.setEnabled(available);
+        btnMenuExit.setEnabled(available);
+        btnSignup.setEnabled(available);
+        cmbUserType.setEnabled(available);
+        txtPassword.setEnabled(available);
+        txtUsername.setEnabled(available);
+        txtRePassword.setEnabled(available);
+        txtEmail.setEnabled(available);
+
     }
 
     /**
