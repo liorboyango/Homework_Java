@@ -41,65 +41,72 @@ public class EditProfile extends javax.swing.JFrame {
 
     public EditProfile(User user) {
         initComponents();
-
-        //retrieve permisions
-        if (user == null) {
-            return;
-        }
-        userType = user.getUserType();
-        userEmail = user.getEmail();
-        if (userType == 1) {
-            currentAdminUser = currentAdminUser.getUser(user.getEmail(), user.getPassword());
-        } else if (userType == 2) {
-            currentTeacherUser = currentTeacherUser.getUser(user.getEmail(), user.getPassword());
-        } else if (userType == 3) {
-            currentSimpleUser = currentSimpleUser.getUser(user.getEmail(), user.getPassword());
-        } else {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errErrorOccurred"), 3000);
-            toastMessage.setVisible(true);
-            return;
-        }
-
-        updateCaptions();
-
-        setIconImage(imgIcon.getImage());
-        setVisible(true);
-        lblPasswordStrength.setVisible(false);
-        btnEdit.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent evt) {
-                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                    Edit();
+        setComponentsAvailable(false);
+        Thread t = new Thread() {
+            public void run() {
+                //retrieve permisions
+                if (user == null) {
+                    return;
                 }
-            }
-        });
-        btnCancel.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent evt) {
-                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                    MainScreen mainMenuTest = new MainScreen();
-                    dispose();
+                userType = user.getUserType();
+                userEmail = user.getEmail();
+                if (userType == 1) {
+                    currentAdminUser = currentAdminUser.getUser(user.getEmail(), user.getPassword());
+                } else if (userType == 2) {
+                    currentTeacherUser = currentTeacherUser.getUser(user.getEmail(), user.getPassword());
+                } else if (userType == 3) {
+                    currentSimpleUser = currentSimpleUser.getUser(user.getEmail(), user.getPassword());
+                } else {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errErrorOccurred"), 3000);
+                    toastMessage.setVisible(true);
+                    setComponentsAvailable(true);
+                    return;
                 }
+
+                updateCaptions();
+
+                setIconImage(imgIcon.getImage());
+                setVisible(true);
+                lblPasswordStrength.setVisible(false);
+                btnEdit.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyPressed(KeyEvent evt) {
+                        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                            Edit();
+                        }
+                    }
+                });
+                btnCancel.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyPressed(KeyEvent evt) {
+                        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                            MainScreen mainMenuTest = new MainScreen();
+                            dispose();
+                        }
+                    }
+                });
+
+                //set language icon to button
+                Image img = langIcon.getImage();
+                Image newimg = img.getScaledInstance(btnLanguage.getWidth(), btnLanguage.getHeight(), java.awt.Image.SCALE_SMOOTH);
+                langIcon = new ImageIcon(newimg);
+                btnLanguage.setIcon(langIcon);
+
+                //set profile icon to label
+                Image imgProfile = profileIcon.getImage();
+                Image newImgProfile = imgProfile.getScaledInstance(lblImageContainer.getWidth(), lblImageContainer.getHeight(), java.awt.Image.SCALE_SMOOTH);
+                profileIcon = new ImageIcon(newImgProfile);
+                lblImageContainer.setIcon(profileIcon);
+
+                //set previous details
+                txtUsername.setText(user.getUsername());
+                cmbUserType.setSelectedIndex(userType - 1);
+
+                txtCurrentPassword.requestFocus();
+                setComponentsAvailable(true);
             }
-        });
-
-        //set language icon to button
-        Image img = langIcon.getImage();
-        Image newimg = img.getScaledInstance(btnLanguage.getWidth(), btnLanguage.getHeight(), java.awt.Image.SCALE_SMOOTH);
-        langIcon = new ImageIcon(newimg);
-        btnLanguage.setIcon(langIcon);
-
-        //set profile icon to label
-        Image imgProfile = profileIcon.getImage();
-        Image newImgProfile = imgProfile.getScaledInstance(lblImageContainer.getWidth(), lblImageContainer.getHeight(), java.awt.Image.SCALE_SMOOTH);
-        profileIcon = new ImageIcon(newImgProfile);
-        lblImageContainer.setIcon(profileIcon);
-
-        //set previous details
-        txtUsername.setText(user.getUsername());
-        cmbUserType.setSelectedIndex(userType-1);
-
-        txtCurrentPassword.requestFocus();
+        };
+        t.start();
     }
 
     @SuppressWarnings("unchecked")
@@ -118,6 +125,7 @@ public class EditProfile extends javax.swing.JFrame {
         lblUsernameDefinition = new javax.swing.JLabel();
         lblImageContainer = new javax.swing.JLabel();
         txtCurrentPassword = new javax.swing.JPasswordField();
+        EditProfilePBar = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
         btnMenuExit = new javax.swing.JMenuItem();
@@ -179,6 +187,9 @@ public class EditProfile extends javax.swing.JFrame {
 
         lblImageContainer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/profile.png"))); // NOI18N
 
+        EditProfilePBar.setIndeterminate(true);
+        EditProfilePBar.setString("");
+
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
         btnMenuExit.setText(bundle.getString("btnExit")); // NOI18N
@@ -218,9 +229,7 @@ public class EditProfile extends javax.swing.JFrame {
                         .addComponent(lblImageContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -240,6 +249,10 @@ public class EditProfile extends javax.swing.JFrame {
                                     .addComponent(txtCurrentPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 105, Short.MAX_VALUE)))))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(336, 336, 336)
+                .addComponent(EditProfilePBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,7 +280,9 @@ public class EditProfile extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(EditProfilePBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
                 .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -277,117 +292,141 @@ public class EditProfile extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        if (!InputValidation.isValidUsername(txtUsername.getText())) {  //check for valid username
-            JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errInvalidUsername"));
-            lblUsernameDefinition.setForeground(colorWeak);
-            txtUsername.requestFocus();
-            return;
-        }
-        if (!InputValidation.isValidPassword(txtCurrentPassword.getText())) {   //check for valid current password
-            JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errInvalidPassword"));
-            txtCurrentPassword.requestFocus();
-            return;
-        }
-        switch (userType) { //check if current password is correct
-            case 1:
-                try {
-                    if (!DataBase.getInstance().isAdmin(userEmail, txtCurrentPassword.getText())) {
-                        JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errCurrentPasswordDontMatch"));
-                        return;
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                if (!InputValidation.isValidUsername(txtUsername.getText())) {  //check for valid username
+                    JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errInvalidUsername"));
+                    lblUsernameDefinition.setForeground(colorWeak);
+                    txtUsername.requestFocus();
+                    setComponentsAvailable(true);
                     return;
                 }
-                break;
-            case 2:
-                try {
-                    if (!DataBase.getInstance().isTeacher(userEmail, txtCurrentPassword.getText())) {
-                        JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errCurrentPasswordDontMatch"));
-                        return;
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+                if (!InputValidation.isValidPassword(txtCurrentPassword.getText())) {   //check for valid current password
+                    JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errInvalidPassword"));
+                    txtCurrentPassword.requestFocus();
+                    setComponentsAvailable(true);
                     return;
                 }
-                break;
-            case 3:
-                try {
-                    if (!DataBase.getInstance().isSimpleUser(userEmail, txtCurrentPassword.getText())) {
-                        JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errCurrentPasswordDontMatch"));
+                switch (userType) { //check if current password is correct
+                    case 1:
+                        try {
+                            if (!DataBase.getInstance().isAdmin(userEmail, txtCurrentPassword.getText())) {
+                                JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errCurrentPasswordDontMatch"));
+                                setComponentsAvailable(true);
+                                return;
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                            setComponentsAvailable(true);
+                            return;
+                        }
+                        break;
+                    case 2:
+                        try {
+                            if (!DataBase.getInstance().isTeacher(userEmail, txtCurrentPassword.getText())) {
+                                JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errCurrentPasswordDontMatch"));
+                                setComponentsAvailable(true);
+                                return;
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                            setComponentsAvailable(true);
+                            return;
+                        }
+                        break;
+                    case 3:
+                        try {
+                            if (!DataBase.getInstance().isSimpleUser(userEmail, txtCurrentPassword.getText())) {
+                                JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errCurrentPasswordDontMatch"));
+                                setComponentsAvailable(true);
+                                return;
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                            setComponentsAvailable(true);
+                            return;
+                        }
+                        break;
+                }
+                changePassword = false;
+                if (!(txtPassword.getText().isEmpty() && txtRePassword.getText().isEmpty())) {  //if new password is entered - validatate
+                    changePassword = true;
+                    if (passwordStrength < 1) {
+                        JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errInvalidPassword"));
+                        lblPasswordDefinition.setForeground(colorWeak);
+                        txtPassword.requestFocus();
+                        setComponentsAvailable(true);
                         return;
                     }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    return;
+                    if (!txtPassword.getText().equals(txtRePassword.getText())) {
+                        JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errPasswordsDontMatch"));
+                        txtRePassword.requestFocus();
+                        setComponentsAvailable(true);
+                        return;
+                    }
                 }
-                break;
-        }
-        changePassword = false;
-        if (!(txtPassword.getText().isEmpty() && txtRePassword.getText().isEmpty())) {  //if new password is entered - validatate
-            changePassword = true;
-            if (passwordStrength < 1) {
-                JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errInvalidPassword"));
-                lblPasswordDefinition.setForeground(colorWeak);
-                txtPassword.requestFocus();
-                return;
+                int tempUserType = userType;
+                userType = 0;
+                if (cmbUserType.getSelectedItem().toString().equals(LocalizationUtil.localizedResourceBundle.getString("userKey"))) {
+                    userType = 3;
+                } else if (cmbUserType.getSelectedItem().toString().equals(LocalizationUtil.localizedResourceBundle.getString("teacherKey"))) {
+                    userType = 2;
+                } else if (cmbUserType.getSelectedItem().toString().equals(LocalizationUtil.localizedResourceBundle.getString("adminKey"))) {
+                    userType = 1;
+                }
+                adminChangeUserType = true;
+                if (tempUserType == 1 && userType > tempUserType) {  //if admin tries to become teacher or simple user
+                    //  if(isOnlyAdmin()){  //if admin is the only admin in the group
+                    if (currentAdminUser.getAllUsers(currentAdminUser.getClassID()).size() > 1) {   //if current admin is the only user in the group
+                        JOptionPane.showMessageDialog(context, LocalizationUtil.localizedResourceBundle.getString("errAdminRemove"));
+                        cmbUserType.requestFocus();
+                        userType = tempUserType;
+                        setComponentsAvailable(true);
+                        return;
+                    }
+                } else if (tempUserType == 1 && userType == tempUserType) {
+                    adminChangeUserType = false;
+                }
+
+                Edit();
+                setComponentsAvailable(true);
             }
-            if (!txtPassword.getText().equals(txtRePassword.getText())) {
-                JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errPasswordsDontMatch"));
-                txtRePassword.requestFocus();
-                return;
-            }
-        }
-        int tempUserType = userType; 
-        userType = 0;
-        if (cmbUserType.getSelectedItem().toString().equals(LocalizationUtil.localizedResourceBundle.getString("userKey"))) {
-            userType = 3;
-        } else if (cmbUserType.getSelectedItem().toString().equals(LocalizationUtil.localizedResourceBundle.getString("teacherKey"))) {
-            userType = 2;
-        } else if (cmbUserType.getSelectedItem().toString().equals(LocalizationUtil.localizedResourceBundle.getString("adminKey"))) {
-            userType = 1;
-        }
-        adminChangeUserType = true;
-        if(tempUserType==1 && userType > tempUserType){  //if admin tries to become teacher or simple user
-          //  if(isOnlyAdmin()){  //if admin is the only admin in the group
-            if(currentAdminUser.getAllUsers(currentAdminUser.getClassID()).size()>1){   //if current admin is the only user in the group
-                JOptionPane.showMessageDialog(this, LocalizationUtil.localizedResourceBundle.getString("errAdminRemove"));
-                cmbUserType.requestFocus();
-                userType=tempUserType;
-                return;
-            }
-        }else if(tempUserType==1 && userType == tempUserType){
-            adminChangeUserType = false;
-        }
-        
-                
-        Edit();
+        };
+        t.start();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        switch (userType) {
-            case 1:
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                switch (userType) {
+                    case 1:
+                        AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
+                        context.dispose();
+                        break;
 
-                AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
-                this.dispose();
-                break;
+                    case 2:
 
-            case 2:
+                        TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
+                        context.dispose();
+                        break;
 
-                TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
-                this.dispose();
-                break;
+                    case 3:
 
-            case 3:
+                        SimpleUserMenu simpleUserMenu = new SimpleUserMenu(currentSimpleUser.getEmail(), currentSimpleUser.getPassword());
+                        context.dispose();
+                        break;
 
-                SimpleUserMenu simpleUserMenu = new SimpleUserMenu(currentSimpleUser.getEmail(), currentSimpleUser.getPassword());
-                this.dispose();
-                break;
-
-            default:
-                MainScreen mainMenu = new MainScreen();
-                this.dispose();
-        }
+                    default:
+                        MainScreen mainMenu = new MainScreen();
+                        context.dispose();
+                }
+            }
+        };
+        t.start();
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnMenuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuExitActionPerformed
@@ -456,9 +495,10 @@ public class EditProfile extends javax.swing.JFrame {
     }//GEN-LAST:event_btnHelpAboutActionPerformed
 
     private void Edit() {
-        int classID=0;
-        if(!adminChangeUserType)
-            classID=-1;
+        int classID = 0;
+        if (!adminChangeUserType) {
+            classID = -1;
+        }
         String username = txtUsername.getText();
         String password = txtCurrentPassword.getText();
         if (changePassword) {
@@ -547,14 +587,15 @@ public class EditProfile extends javax.swing.JFrame {
 
     }
 
-    private boolean isOnlyAdmin(){  //will be used when multiple admins will be available
-        for(User u : currentAdminUser.getAllUsers(currentAdminUser.getClassID())){
-            if(!u.getEmail().equals(currentAdminUser.getEmail()) && u.getUserType()==1)
+    private boolean isOnlyAdmin() {  //will be used when multiple admins will be available
+        for (User u : currentAdminUser.getAllUsers(currentAdminUser.getClassID())) {
+            if (!u.getEmail().equals(currentAdminUser.getEmail()) && u.getUserType() == 1) {
                 return false;
+            }
         }
         return true;
     }
-    
+
     public static void main(User user) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -590,7 +631,19 @@ public class EditProfile extends javax.swing.JFrame {
         });
     }
 
+    private void setComponentsAvailable(boolean available) {
+        EditProfilePBar.setVisible(!available);
+        btnEdit.setEnabled(available);
+        btnCancel.setEnabled(available);
+        cmbUserType.setEnabled(available);
+        btnLanguage.setEnabled(available);
+        txtPassword.setEnabled(available);
+        txtUsername.setEnabled(available);
+        btnHelpAbout.setEnabled(available);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar EditProfilePBar;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnEdit;
     private javax.swing.JMenuItem btnHelpAbout;
