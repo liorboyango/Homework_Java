@@ -93,100 +93,120 @@ public class EditSolutionPopUp extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnOk) {
-            System.out.println(txtSolutionContent.getText());
-            if (txtSolutionContent.getText().isEmpty()) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("enterSolution"), 3000);
-                toastMessage.setVisible(true);
-                txtSolutionContent.requestFocus();
-                return;
-            }
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                if (e.getSource() == btnOk) {
+                    setComponentsAvailable(false);
+                    System.out.println(txtSolutionContent.getText());
+                    if (txtSolutionContent.getText().isEmpty()) {
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("enterSolution"), 3000);
+                        toastMessage.setVisible(true);
+                        txtSolutionContent.requestFocus();
+                        setComponentsAvailable(true);
+                        return;
+                    }
 
-            Solution tempSolution = new Solution(solution.getSolutionID(), txtSolutionContent.getText(), solution.getTaskID(), solution.getVotes(), userEmail, classID, solution.isApproved());
-            if (userType == 1 && currentAdminUser.editSuggestSolution(tempSolution)) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editSolutionSucc"), 3000);
-                toastMessage.setVisible(true);
-                AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
-                this.dispose();
-
-            } else if (userType == 2 && currentTeacherUser.editSuggestSolution(tempSolution)) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editSolutionSucc"), 3000);
-                toastMessage.setVisible(true);
-                TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
-                this.dispose();
-            } else if (userType == 3 && currentSimpleUser.editSuggestSolution(tempSolution)) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editSolutionSucc"), 3000);
-                toastMessage.setVisible(true);
-                SimpleUserMenu simpleUserMenu = new SimpleUserMenu(currentSimpleUser.getEmail(), currentSimpleUser.getPassword());
-                this.dispose();
-            } else {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editSolutionFail"), 3000);
-                toastMessage.setVisible(true);
-            }
-
-        } else if (e.getSource() == btnCancel) {
-            if (userType == 1) {
-                AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
-                this.dispose();
-
-            } else if (userType == 2) {
-                TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
-                this.dispose();
-            } else if (userType == 3) {
-                SimpleUserMenu simpleUserMenu = new SimpleUserMenu(currentSimpleUser.getEmail(), currentSimpleUser.getPassword());
-                this.dispose();
-            } else {
-                this.dispose();
-            }
-
-        } else if (e.getSource() == btnDelete) {
-            switch (userType) {
-                case 1:
-                    if (currentAdminUser.deleteSuggestSolution(solution.getSolutionID())) {
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionSucc"), 3000);
+                    Solution tempSolution = new Solution(solution.getSolutionID(), txtSolutionContent.getText(), solution.getTaskID(), solution.getVotes(), userEmail, classID, solution.isApproved());
+                    if (userType == 1 && currentAdminUser.editSuggestSolution(tempSolution)) {
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editSolutionSucc"), 3000);
                         toastMessage.setVisible(true);
                         AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
-                        this.dispose();
-                    } else {
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionFail"), 3000);
-                        toastMessage.setVisible(true);
-                    }
-                    break;
-                case 2:
-                    if (currentTeacherUser.deleteSuggestSolution(solution.getSolutionID())) {
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionSucc"), 3000);
+                        context.dispose();
+
+                    } else if (userType == 2 && currentTeacherUser.editSuggestSolution(tempSolution)) {
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editSolutionSucc"), 3000);
                         toastMessage.setVisible(true);
                         TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
-                        this.dispose();
-                    } else {
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionFail"), 3000);
-                        toastMessage.setVisible(true);
-                    }
-                    break;
-                case 3:
-                    if (currentSimpleUser.deleteSuggestSolution(solution.getSolutionID())) {
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionSucc"), 3000);
+                        context.dispose();
+                    } else if (userType == 3 && currentSimpleUser.editSuggestSolution(tempSolution)) {
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editSolutionSucc"), 3000);
                         toastMessage.setVisible(true);
                         SimpleUserMenu simpleUserMenu = new SimpleUserMenu(currentSimpleUser.getEmail(), currentSimpleUser.getPassword());
-                        this.dispose();
+                        context.dispose();
                     } else {
-                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionFail"), 3000);
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("editSolutionFail"), 3000);
                         toastMessage.setVisible(true);
+                        setComponentsAvailable(true);
                     }
-                    break;
-                default:
-                    break;
-            }
 
-        } else if (e.getSource() == btnMenuExit) {
-            System.exit(0);
-        }
+                } else if (e.getSource() == btnCancel) {
+                    setComponentsAvailable(false);
+                    if (userType == 1) {
+                        AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
+                        context.dispose();
+
+                    } else if (userType == 2) {
+                        TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
+                        context.dispose();
+                    } else if (userType == 3) {
+                        SimpleUserMenu simpleUserMenu = new SimpleUserMenu(currentSimpleUser.getEmail(), currentSimpleUser.getPassword());
+                        context.dispose();
+                    } else {
+                        context.dispose();
+                    }
+
+                } else if (e.getSource() == btnDelete) {
+                    setComponentsAvailable(false);
+                    switch (userType) {
+                        case 1:
+                            if (currentAdminUser.deleteSuggestSolution(solution.getSolutionID())) {
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionSucc"), 3000);
+                                toastMessage.setVisible(true);
+                                AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
+                                context.dispose();
+                            } else {
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionFail"), 3000);
+                                toastMessage.setVisible(true);
+                                setComponentsAvailable(true);
+                            }
+                            break;
+                        case 2:
+                            if (currentTeacherUser.deleteSuggestSolution(solution.getSolutionID())) {
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionSucc"), 3000);
+                                toastMessage.setVisible(true);
+                                TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
+                                context.dispose();
+                            } else {
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionFail"), 3000);
+                                toastMessage.setVisible(true);
+                                setComponentsAvailable(true);
+                            }
+                            break;
+                        case 3:
+                            if (currentSimpleUser.deleteSuggestSolution(solution.getSolutionID())) {
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionSucc"), 3000);
+                                toastMessage.setVisible(true);
+                                SimpleUserMenu simpleUserMenu = new SimpleUserMenu(currentSimpleUser.getEmail(), currentSimpleUser.getPassword());
+                                context.dispose();
+                            } else {
+                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteSolutionFail"), 3000);
+                                toastMessage.setVisible(true);
+                                setComponentsAvailable(true);
+                            }
+                            break;
+                        default:
+                            setComponentsAvailable(true);
+                            break;
+                    }
+
+                } else if (e.getSource() == btnMenuExit) {
+                    System.exit(0);
+                }
+            }
+        };
+        t.start();
     }
 
     private void buildMenu() {
         menuMenu.add(btnMenuExit);
         menuBar.add(menuMenu);
         setJMenuBar(menuBar);
+    }
+
+    private void setComponentsAvailable(boolean available) {
+        btnOk.setEnabled(available);
+        btnCancel.setEnabled(available);
     }
 
 }
