@@ -19,9 +19,9 @@ public class DataBase {
     private static DataBase instance = null;
 
     /*       TOGGLE TO THESE IF ONLINE:         */
-    static final String jdbcUrl = "jdbc:mysql://sql7.freesqldatabase.com:3306/sql7126052?useUnicode=yes&characterEncoding=UTF-8";
-    static final String jdbcUser = "sql7126052";
-    static final String jdbcPassword = "hcw6pfHqNr";
+    static final String jdbcUrl = "jdbc:mysql://sql7.freesqldatabase.com:3306/sql7127898?useUnicode=yes&characterEncoding=UTF-8";
+    static final String jdbcUser = "sql7127898";
+    static final String jdbcPassword = "l2MIUrwmup";
 
     /*                                                          */
  /*       TOGGLE TO THESE IF OFFLINE (MySQL WorkBench):     */
