@@ -812,6 +812,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         javax.swing.JFrame context = this;
         Thread t = new Thread() {
             public void run() {
+                setComponentsAvailable(false);
                 EditProfile editProfile = new EditProfile(currentUser);
                 context.dispose();
             }
