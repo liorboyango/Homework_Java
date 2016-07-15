@@ -24,6 +24,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
 
     public EditTaskPopUp(Task task, User user) {
         initComponents();
+        setComponentsAvailable(false);
         setVisible(true);
         setLocationRelativeTo(null);
         setIconImage(imgIcon.getImage());
@@ -34,6 +35,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
 
         //retrieve permisions
         if (user == null) {
+            setComponentsAvailable(true);
             return;
         }
         if (user instanceof AdminUser) {
@@ -45,6 +47,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
         } else {
             ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errErrorOccurred"), 3000);
             toastMessage.setVisible(true);
+            setComponentsAvailable(true);
             return;
         }
 
@@ -56,7 +59,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
         //set previous task details
         txtTaskName.setText(task.getTaskName());
         datePicker.setDate(task.getDeadline());
-        
+
         datePicker.getDateEditor().setEnabled(false);
         datePicker.getCalendarButton().addActionListener(new ActionListener() {
             @Override
@@ -66,7 +69,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
                 datePicker.setMinSelectableDate(Calendar.getInstance().getTime());
             }
         });
-        
+        setComponentsAvailable(true);
         btnOk.setEnabled(false);
         datePicker.getDateEditor().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
@@ -81,6 +84,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
         });
 
         txtTaskName.requestFocus();
+
     }
 
     @SuppressWarnings("unchecked")
@@ -91,6 +95,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
         datePicker = new com.toedter.calendar.JDateChooser();
         btnOk = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
+        EditTaskPBar = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
         btnMenuExit = new javax.swing.JMenuItem();
@@ -120,6 +125,9 @@ public class EditTaskPopUp extends javax.swing.JFrame {
                 btnCancelActionPerformed(evt);
             }
         });
+
+        EditTaskPBar.setIndeterminate(true);
+        EditTaskPBar.setString("");
 
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
@@ -153,6 +161,10 @@ public class EditTaskPopUp extends javax.swing.JFrame {
                         .addGap(61, 61, 61)
                         .addComponent(btnCancel)))
                 .addContainerGap(118, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(EditTaskPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(223, 223, 223))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,54 +177,73 @@ public class EditTaskPopUp extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnOk)
                     .addComponent(btnCancel))
-                .addGap(75, 75, 75))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(EditTaskPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(57, 57, 57))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
-        if (txtTaskName.getText().isEmpty()) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errEnterTaskName"), 3000);
-            toastMessage.setVisible(true);
-            txtTaskName.requestFocus();
-            return;
-        }
-        if (datePicker.getDate().toString().isEmpty()) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errEnterTaskDeadline"), 3000);
-            toastMessage.setVisible(true);
-            datePicker.requestFocus();
-            return;
-        }
-        task = new Task(txtTaskName.getText(), datePicker.getDate(), task.getTaskID(), task.getClassID(), task.getStatus());
-        if (userType == 1 && currentAdminUser.editTask(task)) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskSucc"), 3000);
-            toastMessage.setVisible(true);
-            AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
-            this.dispose();
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                if (txtTaskName.getText().isEmpty()) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errEnterTaskName"), 3000);
+                    toastMessage.setVisible(true);
+                    txtTaskName.requestFocus();
+                    setComponentsAvailable(true);
+                    return;
+                }
+                if (datePicker.getDate().toString().isEmpty()) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errEnterTaskDeadline"), 3000);
+                    toastMessage.setVisible(true);
+                    datePicker.requestFocus();
+                    setComponentsAvailable(true);
+                    return;
+                }
+                task = new Task(txtTaskName.getText(), datePicker.getDate(), task.getTaskID(), task.getClassID(), task.getStatus());
+                if (userType == 1 && currentAdminUser.editTask(task)) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskSucc"), 3000);
+                    toastMessage.setVisible(true);
+                    AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
+                    context.dispose();
 
-        } else if (userType == 2 && currentTeacherUser.editTask(task)) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskSucc"), 3000);
-            toastMessage.setVisible(true);
-            TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
-            this.dispose();
-        } else {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskFail"), 3000);
-            toastMessage.setVisible(true);
-        }
+                } else if (userType == 2 && currentTeacherUser.editTask(task)) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskSucc"), 3000);
+                    toastMessage.setVisible(true);
+                    TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
+                    context.dispose();
+                } else {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("updateTaskFail"), 3000);
+                    toastMessage.setVisible(true);
+                    setComponentsAvailable(true);
+                }
+            }
+        };
+        t.start();
     }//GEN-LAST:event_btnOkActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        if (userType == 1) {
-            AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
-            this.dispose();
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                if (userType == 1) {
+                    AdminUserMenu adminUserMenu = new AdminUserMenu(currentAdminUser.getEmail(), currentAdminUser.getPassword());
+                    context.dispose();
 
-        } else if (userType == 2) {
-            TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
-            this.dispose();
-        } else {
-            this.dispose();
-        }
+                } else if (userType == 2) {
+                    TeacherUserMenu teacherUserMenu = new TeacherUserMenu(currentTeacherUser.getEmail(), currentTeacherUser.getPassword());
+                    context.dispose();
+                } else {
+                    context.dispose();
+                }
+            }
+        };
+        t.start();
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnMenuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuExitActionPerformed
@@ -227,7 +258,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtTaskNameKeyReleased
 
-    private void updateCaptions(){
+    private void updateCaptions() {
         setTitle(LocalizationUtil.localizedResourceBundle.getString("addTaskMenuKey"));
         menuMenu.setText(LocalizationUtil.localizedResourceBundle.getString("menuMenu"));
         btnMenuExit.setText(LocalizationUtil.localizedResourceBundle.getString("btnExit"));
@@ -235,6 +266,13 @@ public class EditTaskPopUp extends javax.swing.JFrame {
         btnCancel.setText(LocalizationUtil.localizedResourceBundle.getString("btnCancel"));
         PromptSupport.setPrompt(LocalizationUtil.localizedResourceBundle.getString("lblTaskName"), txtTaskName);
         datePicker.setLocale(LocalizationUtil.localizedResourceBundle.getLocale());
+    }
+
+    private void setComponentsAvailable(boolean available) {
+        EditTaskPBar.setVisible(!available);
+        btnOk.setEnabled(available);
+        btnCancel.setEnabled(available);
+        datePicker.setEnabled(available);
     }
 
     public static void main(Task task, User user) {
@@ -271,6 +309,7 @@ public class EditTaskPopUp extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar EditTaskPBar;
     private javax.swing.JButton btnCancel;
     private javax.swing.JMenuItem btnMenuExit;
     private javax.swing.JButton btnOk;

@@ -68,6 +68,11 @@
               </Group>
               <EmptySpace pref="118" max="32767" attributes="0"/>
           </Group>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <Component id="EditTaskPBar" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="223" max="-2" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -82,7 +87,9 @@
                   <Component id="btnOk" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnCancel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="EditTaskPBar" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -120,6 +127,12 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JProgressBar" name="EditTaskPBar">
+      <Properties>
+        <Property name="indeterminate" type="boolean" value="true"/>
+        <Property name="string" type="java.lang.String" value=""/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
