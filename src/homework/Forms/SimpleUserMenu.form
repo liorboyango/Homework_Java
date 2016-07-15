@@ -119,6 +119,10 @@
                               <EmptySpace min="-2" pref="286" max="-2" attributes="0"/>
                               <Component id="lblWelcome" min="-2" pref="416" max="-2" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="415" max="-2" attributes="0"/>
+                              <Component id="btnSuggestSolution" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace min="0" pref="14" max="32767" attributes="0"/>
                   </Group>
@@ -126,8 +130,8 @@
               <EmptySpace max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="415" max="-2" attributes="0"/>
-              <Component id="btnSuggestSolution" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="400" max="-2" attributes="0"/>
+              <Component id="SimpleUserMenuPBar" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -140,14 +144,12 @@
               <Component id="showOrHideDoneTasks" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnMarkTask" alignment="0" min="-2" pref="54" max="-2" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Component id="btnMarkTask" min="-2" pref="54" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
                       <Component id="jScrollPane4" min="-2" pref="191" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane2" min="-2" pref="115" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="jScrollPane2" alignment="0" min="-2" pref="115" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
                               <Component id="btnVote" min="-2" max="-2" attributes="0"/>
@@ -157,7 +159,9 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btnSuggestSolution" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="57" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="SimpleUserMenuPBar" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="33" max="32767" attributes="0"/>
               <Component id="btnLanguage" min="-2" pref="35" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -292,5 +296,11 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JProgressBar" name="SimpleUserMenuPBar">
+      <Properties>
+        <Property name="indeterminate" type="boolean" value="true"/>
+        <Property name="string" type="java.lang.String" value=""/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

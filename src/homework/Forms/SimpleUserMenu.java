@@ -43,14 +43,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
 
     public SimpleUserMenu(String email, String password) {
         initComponents();
-        //retrieve permisions
-        currentUser = currentUser.getUser(email, password);
-        System.out.println("got simple user priviliges");
-        currentUser.fillTasks();
-        System.out.println("tasks filled");
-
-        updateCaptions();
-
+        setComponentsAvailable(false);
         setIconImage(imgIcon.getImage());
         setVisible(true);
         btnSuggestSolution.setVisible(false);
@@ -63,8 +56,23 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         langIcon = new ImageIcon(newimg);
         btnLanguage.setIcon(langIcon);
 
-        refreshSolutions();
-        setTasksTable();
+        Thread t = new Thread() {
+            public void run() {
+                //retrieve permisions
+                currentUser = currentUser.getUser(email, password);
+                System.out.println("got simple user priviliges");
+                currentUser.fillTasks();
+                System.out.println("tasks filled");
+
+                updateCaptions();
+
+                refreshSolutions();
+                setTasksTable();
+
+                setComponentsAvailable(true);
+            }
+        };
+        t.start();
 
     }
 
@@ -82,6 +90,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         btnLanguage = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tasksTable = new javax.swing.JTable();
+        SimpleUserMenuPBar = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
         btnMenuEditProfile = new javax.swing.JMenuItem();
@@ -170,6 +179,9 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         });
         jScrollPane4.setViewportView(tasksTable);
 
+        SimpleUserMenuPBar.setIndeterminate(true);
+        SimpleUserMenuPBar.setString("");
+
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
         btnMenuEditProfile.setText(bundle.getString("btnEditProfile")); // NOI18N
@@ -236,12 +248,15 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
                                         .addComponent(btnVote))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(286, 286, 286)
-                                .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(415, 415, 415)
+                                .addComponent(btnSuggestSolution)))
                         .addGap(0, 14, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(415, 415, 415)
-                .addComponent(btnSuggestSolution)
+                .addGap(400, 400, 400)
+                .addComponent(SimpleUserMenuPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -255,16 +270,17 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
                     .addComponent(btnMarkTask, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(49, 49, 49)
                                 .addComponent(btnVote)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSuggestSolution)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(SimpleUserMenuPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -274,113 +290,145 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMarkTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarkTaskActionPerformed
-        int taskID;
-        if (parseTaskID() < 0) {
-            return;
-        }
-        taskID = parseTaskID();
-        for (Task t : currentUser.getLocalTasks()) //go through all local tasks
-        {
-            if (taskID == t.getTaskID() && t.getStatus() == false) { //check if id exists and if the status is the oppesit from required action
-                t.setStatus(true);
-                currentUser.getLocalDoneTasks().add(taskID);
-                currentUser.markTask(taskID, true);
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("taskMarkAsDoneSucc"), 3000);
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                int taskID;
+                if (parseTaskID() < 0) {
+                    setComponentsAvailable(true);
+                    return;
+                }
+                taskID = parseTaskID();
+                for (Task t : currentUser.getLocalTasks()) //go through all local tasks
+                {
+                    if (taskID == t.getTaskID() && t.getStatus() == false) { //check if id exists and if the status is the oppesit from required action
+                        t.setStatus(true);
+                        currentUser.getLocalDoneTasks().add(taskID);
+                        currentUser.markTask(taskID, true);
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("taskMarkAsDoneSucc"), 3000);
+                        toastMessage.setVisible(true);
+                        setTasksTable();
+                        btnMarkTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnMarkTaskDone"));
+                        btnMarkTask.setBackground(markGreen);
+                        setComponentsAvailable(true);
+                        return;
+                    } else if (parseTaskID() == t.getTaskID() && t.getStatus() == true) {
+                        t.setStatus(false);
+                        currentUser.getLocalDoneTasks().remove(taskID);
+                        currentUser.markTask(taskID, false);
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("taskMarkAsUndoneSucc"), 3000);
+                        toastMessage.setVisible(true);
+                        setTasksTable();
+                        btnMarkTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnMarkTaskDone"));
+                        btnMarkTask.setBackground(markGreen);
+                        setComponentsAvailable(true);
+                        return;
+                    }
+                }
+                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
                 toastMessage.setVisible(true);
-                setTasksTable();
-                btnMarkTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnMarkTaskDone"));
-                btnMarkTask.setBackground(markGreen);
-                return;
-            } else if (parseTaskID() == t.getTaskID() && t.getStatus() == true) {
-                t.setStatus(false);
-                currentUser.getLocalDoneTasks().remove(taskID);
-                currentUser.markTask(taskID, false);
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("taskMarkAsUndoneSucc"), 3000);
-                toastMessage.setVisible(true);
-                setTasksTable();
-                btnMarkTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnMarkTaskDone"));
-                btnMarkTask.setBackground(markGreen);
-                return;
+                setComponentsAvailable(true);
             }
-        }
-        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
-        toastMessage.setVisible(true);
+        };
+        t.start();
     }//GEN-LAST:event_btnMarkTaskActionPerformed
 
     private void btnVoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoteActionPerformed
-        String solutionEmail;
-        if (parseSolutionEmail() == null) {
-            return;
-        }
-        solutionEmail = parseSolutionEmail();
-        int taskID;
-        if (parseTaskID() < 0) {
-            return;
-        }
-        taskID = parseTaskID();
-        for (Task t : currentUser.getLocalTasks()) {
-            if (t.getTaskID() == taskID) {
-                for (Solution s : t.getSolutions()) {
-                    if (s.getUserEmail().equals(solutionEmail)) {
-                        if (!currentUser.isAlreadyVoted(s.getSolutionID())) {
-                            if (currentUser.voteSolution(s.getSolutionID())) {
-                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("addVoteSucc"), 3000);
-                                toastMessage.setVisible(true);
-                                refreshSolutions();
-                                return;
-                            } else {
-                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("addVoteFail"), 3000);
-                                toastMessage.setVisible(true);
-                                refreshSolutions();
-                                return;
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                String solutionEmail;
+                if (parseSolutionEmail() == null) {
+                    setComponentsAvailable(true);
+                    return;
+                }
+                solutionEmail = parseSolutionEmail();
+                int taskID;
+                if (parseTaskID() < 0) {
+                    setComponentsAvailable(true);
+                    return;
+                }
+                taskID = parseTaskID();
+                for (Task t : currentUser.getLocalTasks()) {
+                    if (t.getTaskID() == taskID) {
+                        for (Solution s : t.getSolutions()) {
+                            if (s.getUserEmail().equals(solutionEmail)) {
+                                if (!currentUser.isAlreadyVoted(s.getSolutionID())) {
+                                    if (currentUser.voteSolution(s.getSolutionID())) {
+                                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("addVoteSucc"), 3000);
+                                        toastMessage.setVisible(true);
+                                        refreshSolutions();
+                                        setComponentsAvailable(true);
+                                        return;
+                                    } else {
+                                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("addVoteFail"), 3000);
+                                        toastMessage.setVisible(true);
+                                        refreshSolutions();
+                                        setComponentsAvailable(true);
+                                        return;
+                                    }
+                                } else if (currentUser.unVoteSolution(s.getSolutionID())) {
+                                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("removeVoteSucc"), 3000);
+                                    toastMessage.setVisible(true);
+                                    refreshSolutions();
+                                    setComponentsAvailable(true);
+                                    return;
+                                } else {
+                                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("removeVoteFail"), 3000);
+                                    toastMessage.setVisible(true);
+                                    refreshSolutions();
+                                    setComponentsAvailable(true);
+                                    return;
+                                }
                             }
-                        } else if (currentUser.unVoteSolution(s.getSolutionID())) {
-                            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("removeVoteSucc"), 3000);
-                            toastMessage.setVisible(true);
-                            refreshSolutions();
-                            return;
-                        } else {
-                            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("removeVoteFail"), 3000);
-                            toastMessage.setVisible(true);
-                            refreshSolutions();
-                            return;
                         }
                     }
                 }
             }
-        }
+        };
+        t.start();
     }//GEN-LAST:event_btnVoteActionPerformed
 
     private void btnSuggestSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuggestSolutionActionPerformed
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                int taskID;
+                if (parseTaskID() < 0) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
+                    toastMessage.setVisible(true);
+                    setComponentsAvailable(true);
+                    return;
+                }
+                taskID = parseTaskID();
 
-        int taskID;
-        if (parseTaskID() < 0) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
-            toastMessage.setVisible(true);
-            return;
-        }
-        taskID = parseTaskID();
-
-        for (Task t : currentUser.getLocalTasks()) {
-            if (t.getTaskID() == taskID) {
-                if (!t.getSolutions().isEmpty()) {
-                    for (Solution s : t.getSolutions()) {
-                        if (s.getUserEmail().equals(currentUser.getEmail()) && s.getUserEmail().equals(parseSolutionEmail())) {
-                            EditSolutionPopUp editSolutionPopUp = new EditSolutionPopUp(s, currentUser);
-                            this.dispose();
+                for (Task t : currentUser.getLocalTasks()) {
+                    if (t.getTaskID() == taskID) {
+                        if (!t.getSolutions().isEmpty()) {
+                            for (Solution s : t.getSolutions()) {
+                                if (s.getUserEmail().equals(currentUser.getEmail()) && s.getUserEmail().equals(parseSolutionEmail())) {
+                                    EditSolutionPopUp editSolutionPopUp = new EditSolutionPopUp(s, currentUser);
+                                    context.dispose();
+                                    return;
+                                }
+                            }
+                            AddNewSolutionPopUp addNewSolutionPopUp = new AddNewSolutionPopUp(currentUser, taskID);
+                            context.dispose();
+                            return;
+                        } else {
+                            AddNewSolutionPopUp addNewSolutionPopUp = new AddNewSolutionPopUp(currentUser, taskID);
+                            context.dispose();
                             return;
                         }
                     }
-                    AddNewSolutionPopUp addNewSolutionPopUp = new AddNewSolutionPopUp(currentUser, taskID);
-                    this.dispose();
-                    return;
-                } else {
-                    AddNewSolutionPopUp addNewSolutionPopUp = new AddNewSolutionPopUp(currentUser, taskID);
-                    this.dispose();
-                    return;
                 }
+                setComponentsAvailable(true);
             }
-        }
+        };
+        t.start();
     }//GEN-LAST:event_btnSuggestSolutionActionPerformed
 
     private void showOrHideDoneTasksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showOrHideDoneTasksActionPerformed
@@ -415,8 +463,15 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
     }//GEN-LAST:event_btnHelpAboutActionPerformed
 
     private void btnMenuEditProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuEditProfileActionPerformed
-        EditProfile editProfile = new EditProfile(currentUser);
-        this.dispose();
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                EditProfile editProfile = new EditProfile(currentUser);
+                context.dispose();
+            }
+        };
+        t.start();
     }//GEN-LAST:event_btnMenuEditProfileActionPerformed
 
     private void refreshSolutions() {
@@ -677,6 +732,17 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         tasksTable.setDefaultRenderer(Object.class, myRenderer);
     }
 
+    private void setComponentsAvailable(boolean available) {
+        SimpleUserMenuPBar.setVisible(!available);
+        btnMenuLogout.setEnabled(available);
+        tasksTable.setEnabled(available);
+        btnMarkTask.setEnabled(available);
+        showOrHideDoneTasks.setEnabled(available);
+        btnLanguage.setEnabled(available);
+        btnHelpAbout.setEnabled(available);
+        btnMenuEditProfile.setEnabled(available);
+    }
+
     public static void main(String email, String password) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -717,6 +783,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar SimpleUserMenuPBar;
     private javax.swing.JMenuItem btnHelpAbout;
     private javax.swing.JButton btnLanguage;
     private javax.swing.JButton btnMarkTask;
@@ -768,7 +835,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         if (!e.getValueIsAdjusting()) {
             if (e.getSource() == solutionsList) {
                 btnSuggestSolution.setEnabled(false);
-                
+
                 String solutionEmail;
                 if (parseSolutionEmail() == null) {
                     return;
