@@ -47,22 +47,12 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     private HashSet<Solution> localSolutions = new HashSet<Solution>();
 
     public AdminUserMenu(String email, String password) {
+
         initComponents();
-        AdminUserMenuPBar.setVisible(false);
-        //retrieve permisions
-        currentUser = currentUser.getUser(email, password);
-        System.out.println("got admin priviliges");
-        currentUser.fillTasks();
-        System.out.println("tasks filled");
-
-        updateCaptions();
-
-        setIconImage(imgIcon.getImage());
-        setVisible(true);
-        btnSuggestSolution.setVisible(false);
-        btnVote.setVisible(false);
         usersList.addListSelectionListener(this);
         solutionsList.addListSelectionListener(this);
+        setIconImage(imgIcon.getImage());
+        setVisible(true);
 
         //set language icon to button
         Image img = langIcon.getImage();
@@ -70,9 +60,27 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         langIcon = new ImageIcon(newimg);
         btnLanguage.setIcon(langIcon);
 
-        refreshSolutions();
-        loadUsersList();
-        setTasksTable();
+        btnSuggestSolution.setVisible(false);
+        btnVote.setVisible(false);
+
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                //retrieve permisions
+                currentUser = currentUser.getUser(email, password);
+                System.out.println("got admin priviliges");
+                currentUser.fillTasks();
+                System.out.println("tasks filled");
+
+                updateCaptions();
+
+                refreshSolutions();
+                loadUsersList();
+                setTasksTable();
+                setComponentsAvailable(true);
+            }
+        };
+        t.start();
     }
 
     @SuppressWarnings("unchecked")
@@ -93,7 +101,6 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         btnEditTask = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tasksTable = new javax.swing.JTable();
-        AdminUserMenuPBar = new javax.swing.JProgressBar();
         internalUsersTab = new javax.swing.JInternalFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         usersList = new javax.swing.JList<>();
@@ -102,6 +109,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         btnRemoveUser = new javax.swing.JButton();
         btnAddTeacher = new javax.swing.JButton();
         btnLanguage = new javax.swing.JButton();
+        AdminUserMenuPBar = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
         btnMenuEditProfile = new javax.swing.JMenuItem();
@@ -209,9 +217,6 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         });
         jScrollPane4.setViewportView(tasksTable);
 
-        AdminUserMenuPBar.setIndeterminate(true);
-        AdminUserMenuPBar.setString("");
-
         javax.swing.GroupLayout internalTasksTabLayout = new javax.swing.GroupLayout(internalTasksTab.getContentPane());
         internalTasksTab.getContentPane().setLayout(internalTasksTabLayout);
         internalTasksTabLayout.setHorizontalGroup(
@@ -238,10 +243,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
                             .addComponent(showOrHideDoneTasks, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(internalTasksTabLayout.createSequentialGroup()
                         .addGap(410, 410, 410)
-                        .addComponent(btnSuggestSolution))
-                    .addGroup(internalTasksTabLayout.createSequentialGroup()
-                        .addGap(377, 377, 377)
-                        .addComponent(AdminUserMenuPBar, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnSuggestSolution)))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
         internalTasksTabLayout.setVerticalGroup(
@@ -270,9 +272,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
                                 .addComponent(btnVote)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSuggestSolution)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(AdminUserMenuPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(bundle.getString("tabTasks"), internalTasksTab); // NOI18N
@@ -354,6 +354,9 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
             }
         });
 
+        AdminUserMenuPBar.setIndeterminate(true);
+        AdminUserMenuPBar.setString("");
+
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
         btnMenuEditProfile.setText(bundle.getString("btnEditProfile")); // NOI18N
@@ -407,8 +410,13 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
                         .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1009, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1009, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(390, 390, 390)
+                                .addComponent(AdminUserMenuPBar, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -419,7 +427,9 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
                 .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(AdminUserMenuPBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(btnLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -442,79 +452,99 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     }//GEN-LAST:event_btnMenuLogoutActionPerformed
 
     private void btnSuggestSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuggestSolutionActionPerformed
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                int taskID;
+                if (parseTaskID() < 0) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
+                    toastMessage.setVisible(true);
+                    setComponentsAvailable(true);
+                    return;
+                }
+                taskID = parseTaskID();
 
-        int taskID;
-        if (parseTaskID() < 0) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
-            toastMessage.setVisible(true);
-            return;
-        }
-        taskID = parseTaskID();
-
-        for (Task t : currentUser.getLocalTasks()) {
-            if (t.getTaskID() == taskID) {
-                if (!t.getSolutions().isEmpty()) {
-                    for (Solution s : t.getSolutions()) {
-                        if (s.getUserEmail().equals(currentUser.getEmail()) && s.getUserEmail().equals(parseSolutionEmail())) {
-                            EditSolutionPopUp editSolutionPopUp = new EditSolutionPopUp(s, currentUser);
-                            this.dispose();
+                for (Task t : currentUser.getLocalTasks()) {
+                    if (t.getTaskID() == taskID) {
+                        if (!t.getSolutions().isEmpty()) {
+                            for (Solution s : t.getSolutions()) {
+                                if (s.getUserEmail().equals(currentUser.getEmail()) && s.getUserEmail().equals(parseSolutionEmail())) {
+                                    EditSolutionPopUp editSolutionPopUp = new EditSolutionPopUp(s, currentUser);
+                                    context.dispose();
+                                    return;
+                                }
+                            }
+                            AddNewSolutionPopUp addNewSolutionPopUp = new AddNewSolutionPopUp(currentUser, taskID);
+                            context.dispose();
+                            return;
+                        } else {
+                            AddNewSolutionPopUp addNewSolutionPopUp = new AddNewSolutionPopUp(currentUser, taskID);
+                            context.dispose();
                             return;
                         }
                     }
-                    AddNewSolutionPopUp addNewSolutionPopUp = new AddNewSolutionPopUp(currentUser, taskID);
-                    this.dispose();
-                    return;
-                } else {
-                    AddNewSolutionPopUp addNewSolutionPopUp = new AddNewSolutionPopUp(currentUser, taskID);
-                    this.dispose();
-                    return;
                 }
             }
-        }
+        };
+        t.start();
     }//GEN-LAST:event_btnSuggestSolutionActionPerformed
 
     private void btnVoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoteActionPerformed
-        String solutionEmail;
-        if (parseSolutionEmail() == null) {
-            return;
-        }
-        solutionEmail = parseSolutionEmail();
-        int taskID;
-        if (parseTaskID() < 0) {
-            return;
-        }
-        taskID = parseTaskID();
-        for (Task t : currentUser.getLocalTasks()) {
-            if (t.getTaskID() == taskID) {
-                for (Solution s : t.getSolutions()) {
-                    if (s.getUserEmail().equals(solutionEmail)) {
-                        if (!currentUser.isAlreadyVoted(s.getSolutionID())) {
-                            if (currentUser.voteSolution(s.getSolutionID())) {
-                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("addVoteSucc"), 3000);
-                                toastMessage.setVisible(true);
-                                refreshSolutions();
-                                return;
-                            } else {
-                                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("addVoteFail"), 3000);
-                                toastMessage.setVisible(true);
-                                refreshSolutions();
-                                return;
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                String solutionEmail;
+                if (parseSolutionEmail() == null) {
+                    setComponentsAvailable(true);
+                    return;
+                }
+                solutionEmail = parseSolutionEmail();
+                int taskID;
+                if (parseTaskID() < 0) {
+                    setComponentsAvailable(true);
+                    return;
+                }
+                taskID = parseTaskID();
+                for (Task t : currentUser.getLocalTasks()) {
+                    if (t.getTaskID() == taskID) {
+                        for (Solution s : t.getSolutions()) {
+                            if (s.getUserEmail().equals(solutionEmail)) {
+                                if (!currentUser.isAlreadyVoted(s.getSolutionID())) {
+                                    if (currentUser.voteSolution(s.getSolutionID())) {
+                                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("addVoteSucc"), 3000);
+                                        toastMessage.setVisible(true);
+                                        refreshSolutions();
+                                        setComponentsAvailable(true);
+                                        return;
+                                    } else {
+                                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("addVoteFail"), 3000);
+                                        toastMessage.setVisible(true);
+                                        refreshSolutions();
+                                        setComponentsAvailable(true);
+                                        return;
+                                    }
+                                } else if (currentUser.unVoteSolution(s.getSolutionID())) {
+                                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("removeVoteSucc"), 3000);
+                                    toastMessage.setVisible(true);
+                                    refreshSolutions();
+                                    setComponentsAvailable(true);
+                                    return;
+                                } else {
+                                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("removeVoteFail"), 3000);
+                                    toastMessage.setVisible(true);
+                                    refreshSolutions();
+                                    setComponentsAvailable(true);
+                                    return;
+                                }
                             }
-                        } else if (currentUser.unVoteSolution(s.getSolutionID())) {
-                            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("removeVoteSucc"), 3000);
-                            toastMessage.setVisible(true);
-                            refreshSolutions();
-                            return;
-                        } else {
-                            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("removeVoteFail"), 3000);
-                            toastMessage.setVisible(true);
-                            refreshSolutions();
-                            return;
                         }
                     }
                 }
             }
-        }
+        };
+        t.start();
     }//GEN-LAST:event_btnVoteActionPerformed
 
     private void btnMarkTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarkTaskActionPerformed
@@ -560,146 +590,206 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     }//GEN-LAST:event_btnAddUserActionPerformed
 
     private void btnRemoveUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveUserActionPerformed
-        String email;
-        if (parseUserEmail() == null) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseUserFirst"), 3000);
-            toastMessage.setVisible(true);
-            return;
-        }
-        if (isTeacher() || isAdmin()) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("pleaseChooseUser"), 3000);
-            toastMessage.setVisible(true);
-            return;
-        }
-        email = parseUserEmail();
-        HashSet<User> allUsers = new HashSet<>();
-        allUsers = currentUser.getAllUsers(currentUser.getClassID());
-        for (User u : allUsers) {
-            if (u.getEmail().equals(email)) {
-                if (currentUser.removeUserFromGroup(u)) {
-                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("userRemovedFromGroupSucc"), 3000);
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                String email;
+                if (parseUserEmail() == null) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseUserFirst"), 3000);
                     toastMessage.setVisible(true);
-                    loadUsersList();
+                    setComponentsAvailable(true);
                     return;
                 }
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("userRemovedFromGroupFail"), 3000);
-                toastMessage.setVisible(true);
+                if (isTeacher() || isAdmin()) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("pleaseChooseUser"), 3000);
+                    toastMessage.setVisible(true);
+                    setComponentsAvailable(true);
+                    return;
+                }
+                email = parseUserEmail();
+                HashSet<User> allUsers = new HashSet<>();
+                allUsers = currentUser.getAllUsers(currentUser.getClassID());
+                for (User u : allUsers) {
+                    if (u.getEmail().equals(email)) {
+                        if (currentUser.removeUserFromGroup(u)) {
+                            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("userRemovedFromGroupSucc"), 3000);
+                            toastMessage.setVisible(true);
+                            loadUsersList();
+                            setComponentsAvailable(true);
+                            return;
+                        }
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("userRemovedFromGroupFail"), 3000);
+                        toastMessage.setVisible(true);
+                        setComponentsAvailable(true);
+                    }
+                }
             }
-        }
+        };
+        t.start();
     }//GEN-LAST:event_btnRemoveUserActionPerformed
 
     private void btnRemoveTeacherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveTeacherActionPerformed
-        String email;
-        if (parseUserEmail() == null) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTeacherFirst"), 3000);
-            toastMessage.setVisible(true);
-            return;
-        }
-        if (!isTeacher()) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("pleaseChooseTeacher"), 3000);
-            toastMessage.setVisible(true);
-            return;
-        }
-        email = parseUserEmail();
-        HashSet<User> allUsers = new HashSet<>();
-        allUsers = currentUser.getAllUsers(currentUser.getClassID());
-        for (User u : allUsers) {
-            if (u.getEmail().equals(email)) {
-                if (currentUser.removeUserFromGroup(u)) {
-                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherRemovedFromGroupSucc"), 3000);
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                String email;
+                if (parseUserEmail() == null) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTeacherFirst"), 3000);
                     toastMessage.setVisible(true);
-                    loadUsersList();
+                    setComponentsAvailable(true);
                     return;
                 }
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherRemovedFromGroupFail"), 3000);
-                toastMessage.setVisible(true);
+                if (!isTeacher()) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("pleaseChooseTeacher"), 3000);
+                    toastMessage.setVisible(true);
+                    setComponentsAvailable(true);
+                    return;
+                }
+                email = parseUserEmail();
+                HashSet<User> allUsers = new HashSet<>();
+                allUsers = currentUser.getAllUsers(currentUser.getClassID());
+                for (User u : allUsers) {
+                    if (u.getEmail().equals(email)) {
+                        if (currentUser.removeUserFromGroup(u)) {
+                            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherRemovedFromGroupSucc"), 3000);
+                            toastMessage.setVisible(true);
+                            loadUsersList();
+                            setComponentsAvailable(true);
+                            return;
+                        }
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherRemovedFromGroupFail"), 3000);
+                        toastMessage.setVisible(true);
+                        setComponentsAvailable(true);
+                    }
+                }
             }
-        }
+        };
+        t.start();
     }//GEN-LAST:event_btnRemoveTeacherActionPerformed
 
     private void btnAddTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTaskActionPerformed
-        AddNewTaskPopUp newTaskPopUp = new AddNewTaskPopUp(currentUser);
-        this.dispose();
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                AddNewTaskPopUp newTaskPopUp = new AddNewTaskPopUp(currentUser);
+                context.dispose();
+            }
+        };
+        t.start();
     }//GEN-LAST:event_btnAddTaskActionPerformed
 
     private void btnEditTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditTaskActionPerformed
-        int taskID;
-        if (parseTaskID() < 0) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
-            toastMessage.setVisible(true);
-            return;
-        }
-        taskID = parseTaskID();
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                int taskID;
+                if (parseTaskID() < 0) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
+                    toastMessage.setVisible(true);
+                    setComponentsAvailable(true);
+                    return;
+                }
+                taskID = parseTaskID();
 
-        for (Task t : currentUser.getLocalTasks()) {
-            if (t.getTaskID() == taskID) {
-                EditTaskPopUp editTaskPopUp = new EditTaskPopUp(t, currentUser);
-                this.dispose();
+                for (Task t : currentUser.getLocalTasks()) {
+                    if (t.getTaskID() == taskID) {
+                        EditTaskPopUp editTaskPopUp = new EditTaskPopUp(t, currentUser);
+                        context.dispose();
+                        return;
+                    }
+
+                }
+                setComponentsAvailable(true);
             }
-
-        }
+        };
+        t.start();
     }//GEN-LAST:event_btnEditTaskActionPerformed
 
     private void btnDeleteTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteTaskActionPerformed
-        int taskID;
-        if (parseTaskID() < 0) {
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
-            toastMessage.setVisible(true);
-            return;
-        }
-        taskID = parseTaskID();
-        setSuggestSolutionBtn(taskID);
-        if (currentUser.deleteTask(taskID)) {
-            System.out.println("Task Deleted Successfully");
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteTaskSucc"), 3000);
-            toastMessage.setVisible(true);
-            for (Task t : currentUser.getLocalTasks()) {
-                if (t.getTaskID() == taskID) {
-                    currentUser.getLocalTasks().remove(t);
-                    break;
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                int taskID;
+                if (parseTaskID() < 0) {
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
+                    toastMessage.setVisible(true);
+                    setComponentsAvailable(true);
+                    return;
+                }
+                taskID = parseTaskID();
+                setSuggestSolutionBtn(taskID);
+                if (currentUser.deleteTask(taskID)) {
+                    System.out.println("Task Deleted Successfully");
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteTaskSucc"), 3000);
+                    toastMessage.setVisible(true);
+                    for (Task t : currentUser.getLocalTasks()) {
+                        if (t.getTaskID() == taskID) {
+                            currentUser.getLocalTasks().remove(t);
+                            break;
+                        }
+                    }
+                    AdminUserMenu adminUSerMenu = new AdminUserMenu(currentUser.getEmail(), currentUser.getPassword());
+                    context.dispose();
+                } else {
+                    System.out.println("Failed To Delete Task");
+                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteTaskFail"), 3000);
+                    toastMessage.setVisible(true);
+                    setComponentsAvailable(true);
                 }
             }
-            AdminUserMenu adminUSerMenu = new AdminUserMenu(currentUser.getEmail(), currentUser.getPassword());
-            this.dispose();
-        } else {
-            System.out.println("Failed To Delete Task");
-            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("deleteTaskFail"), 3000);
-            toastMessage.setVisible(true);
-        }
+        };
+        t.start();
     }//GEN-LAST:event_btnDeleteTaskActionPerformed
 
     private void btnAddTeacherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTeacherActionPerformed
-        String email = JOptionPane.showInputDialog(LocalizationUtil.localizedResourceBundle.getString("enterTeacherEmail"));
-        if (email == null) {
-            return;
-        }
-        HashSet<User> allUsers = new HashSet<>();
-        allUsers = currentUser.getAllUsers(-1);
-        for (User u : allUsers) {
-            if (u.getEmail().equals(email) && u.getClassID() == currentUser.getClassID()) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errTeacherAlreadyInGroup"), 3000);
-                toastMessage.setVisible(true);
-                return;
-
-            } else if (u.getEmail().equals(email) && u.getUserType() != 2) {
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errUserIsNotTeacher"), 3000);
-                toastMessage.setVisible(true);
-                return;
-            } else if (u.getEmail().equals(email) && u.getUserType() == 2) {
-                if (currentUser.addUserToGroup(u)) {
-                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherAddedToGroupSucc"), 3000);
-                    toastMessage.setVisible(true);
-                    loadUsersList();
-                    return;
-                } else {
-                    ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherAddedToGroupFail"), 3000);
-                    toastMessage.setVisible(true);
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                String email = JOptionPane.showInputDialog(LocalizationUtil.localizedResourceBundle.getString("enterTeacherEmail"));
+                if (email == null) {
+                    setComponentsAvailable(true);
                     return;
                 }
+                HashSet<User> allUsers = new HashSet<>();
+                allUsers = currentUser.getAllUsers(-1);
+                for (User u : allUsers) {
+                    if (u.getEmail().equals(email) && u.getClassID() == currentUser.getClassID()) {
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errTeacherAlreadyInGroup"), 3000);
+                        toastMessage.setVisible(true);
+                        setComponentsAvailable(true);
+                        return;
+
+                    } else if (u.getEmail().equals(email) && u.getUserType() != 2) {
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errUserIsNotTeacher"), 3000);
+                        toastMessage.setVisible(true);
+                        setComponentsAvailable(true);
+                        return;
+                    } else if (u.getEmail().equals(email) && u.getUserType() == 2) {
+                        if (currentUser.addUserToGroup(u)) {
+                            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherAddedToGroupSucc"), 3000);
+                            toastMessage.setVisible(true);
+                            loadUsersList();
+                            setComponentsAvailable(true);
+                            return;
+                        } else {
+                            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("teacherAddedToGroupFail"), 3000);
+                            toastMessage.setVisible(true);
+                            setComponentsAvailable(true);
+                            return;
+                        }
+                    }
+                }
+                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errNoTeacherWasFound"), 3000);
+                toastMessage.setVisible(true);
+                setComponentsAvailable(true);
             }
-        }
-        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errNoTeacherWasFound"), 3000);
-        toastMessage.setVisible(true);
+        };
+        t.start();
     }//GEN-LAST:event_btnAddTeacherActionPerformed
 
     private void btnLanguageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLanguageActionPerformed
@@ -719,8 +809,14 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     }//GEN-LAST:event_btnHelpAboutActionPerformed
 
     private void btnMenuEditProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuEditProfileActionPerformed
-        EditProfile editProfile = new EditProfile(currentUser);
-        this.dispose();
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                EditProfile editProfile = new EditProfile(currentUser);
+                context.dispose();
+            }
+        };
+        t.start();
     }//GEN-LAST:event_btnMenuEditProfileActionPerformed
 
     private void loadUsersList() {
@@ -1037,37 +1133,66 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     }
 
     private void markTask() {
-        int taskID;
-        if (parseTaskID() < 0) {
-            return;
-        }
-        taskID = parseTaskID();
-        for (Task t : currentUser.getLocalTasks()) //go through all local tasks
-        {
-            if (taskID == t.getTaskID() && t.getStatus() == false) { //check if id exists and if the status is the oppesit from required action
-                t.setStatus(true);
-                currentUser.getLocalDoneTasks().add(taskID);
-                currentUser.markTask(taskID, true);
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("taskMarkAsDoneSucc"), 3000);
+        javax.swing.JFrame context = this;
+        Thread t = new Thread() {
+            public void run() {
+                setComponentsAvailable(false);
+                int taskID;
+                if (parseTaskID() < 0) {
+                    setComponentsAvailable(true);
+                    return;
+                }
+                taskID = parseTaskID();
+                for (Task t : currentUser.getLocalTasks()) //go through all local tasks
+                {
+                    if (taskID == t.getTaskID() && t.getStatus() == false) { //check if id exists and if the status is the oppesit from required action
+                        t.setStatus(true);
+                        currentUser.getLocalDoneTasks().add(taskID);
+                        currentUser.markTask(taskID, true);
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("taskMarkAsDoneSucc"), 3000);
+                        toastMessage.setVisible(true);
+                        setTasksTable();
+                        btnMarkTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnMarkTaskDone"));
+                        btnMarkTask.setBackground(markGreen);
+                        setComponentsAvailable(true);
+                        return;
+                    } else if (parseTaskID() == t.getTaskID() && t.getStatus() == true) {
+                        t.setStatus(false);
+                        currentUser.getLocalDoneTasks().remove(taskID);
+                        currentUser.markTask(taskID, false);
+                        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("taskMarkAsUndoneSucc"), 3000);
+                        toastMessage.setVisible(true);
+                        setTasksTable();
+                        btnMarkTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnMarkTaskDone"));
+                        btnMarkTask.setBackground(markGreen);
+                        setComponentsAvailable(true);
+                        return;
+                    }
+                }
+                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
                 toastMessage.setVisible(true);
-                setTasksTable();
-                btnMarkTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnMarkTaskDone"));
-                btnMarkTask.setBackground(markGreen);
-                return;
-            } else if (parseTaskID() == t.getTaskID() && t.getStatus() == true) {
-                t.setStatus(false);
-                currentUser.getLocalDoneTasks().remove(taskID);
-                currentUser.markTask(taskID, false);
-                ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("taskMarkAsUndoneSucc"), 3000);
-                toastMessage.setVisible(true);
-                setTasksTable();
-                btnMarkTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnMarkTaskDone"));
-                btnMarkTask.setBackground(markGreen);
-                return;
+                setComponentsAvailable(true);
             }
-        }
-        ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("chooseTaskFirst"), 3000);
-        toastMessage.setVisible(true);
+        };
+        t.start();
+    }
+
+    private void setComponentsAvailable(boolean available) {
+        AdminUserMenuPBar.setVisible(!available);
+        btnMenuLogout.setEnabled(available);
+        tasksTable.setEnabled(available);
+        btnMarkTask.setEnabled(available);
+        showOrHideDoneTasks.setEnabled(available);
+        btnAddUser.setEnabled(available);
+        btnRemoveUser.setEnabled(available);
+        btnRemoveTeacher.setEnabled(available);
+        btnAddTask.setEnabled(available);
+        btnEditTask.setEnabled(available);
+        btnDeleteTask.setEnabled(available);
+        btnAddTeacher.setEnabled(available);
+        btnLanguage.setEnabled(available);
+        btnHelpAbout.setEnabled(available);
+        btnMenuEditProfile.setEnabled(available);
     }
 
     public static void main(String email, String password) {
