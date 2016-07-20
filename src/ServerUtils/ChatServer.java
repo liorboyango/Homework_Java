@@ -85,7 +85,6 @@ public class ChatServer {
                         socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
 
-                System.out.println("BEFORE name submit");
                 // Request a name from this client.  Keep requesting until
                 // a name is submitted that is not already used.  Note that
                 // checking for the existence of a name and adding the name
@@ -103,13 +102,11 @@ public class ChatServer {
                         }
                     }
                 }
-                System.out.println("AFTER name submit");
                 // Now that a successful name has been chosen, add the
                 // socket's print writer to the set of all writers so
                 // this client can receive broadcast messages.
                 out.println("NAMEACCEPTED");
                 writers.add(out);
-                System.out.println("BEFORE Message submit");
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.
                 while (true) {
@@ -120,7 +117,6 @@ public class ChatServer {
                     for (PrintWriter writer : writers) {
                         writer.println("MESSAGE " + name + ": " + input);
                     }
-                    System.out.println("AFTER Message submit");
                 }
 
             } catch (IOException e) {
