@@ -5,7 +5,10 @@
  */
 package homework.Forms;
 
+import ServerUtils.ChatServer;
 import homework.Users.User;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +16,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jdesktop.xswingx.PromptSupport;
 import resources.LocalizationUtil;
 
 /**
@@ -29,15 +33,16 @@ public class ChatScreen extends javax.swing.JFrame {
         initComponents();
         setVisible(true);
 
-         updateCaptions();
+        updateCaptions();
         if (user != null) {
             this.user = user;
         } else {
             System.out.println("bad User");
             return;
         }
-        
+
         txtChatMessage.setEditable(false);
+        btnSendChatMessage.setEnabled(false);
         txtChatBox.setEditable(false);
         try {
             run();
@@ -71,11 +76,6 @@ public class ChatScreen extends javax.swing.JFrame {
         });
 
         txtChatMessage.setToolTipText("");
-        txtChatMessage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtChatMessageActionPerformed(evt);
-            }
-        });
 
         txtChatBox.setColumns(20);
         txtChatBox.setRows(5);
@@ -149,24 +149,25 @@ public class ChatScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnHelpAboutActionPerformed
 
     private void btnSendChatMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendChatMessageActionPerformed
-        out.println(txtChatMessage.getText());
-        txtChatMessage.setText("");
+        sendMessage();
     }//GEN-LAST:event_btnSendChatMessageActionPerformed
 
-    private void txtChatMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtChatMessageActionPerformed
+    private void sendMessage() {
         out.println(txtChatMessage.getText());
         txtChatMessage.setText("");
-    }//GEN-LAST:event_txtChatMessageActionPerformed
+    }
 
-     private void updateCaptions() {
+    private void updateCaptions()   {
         setTitle(LocalizationUtil.localizedResourceBundle.getString("btnChat"));
+        PromptSupport.uninstall(txtChatMessage);
+        PromptSupport.setPrompt(LocalizationUtil.localizedResourceBundle.getString("type"), txtChatMessage);
         menuMenu.setText(LocalizationUtil.localizedResourceBundle.getString("menuMenu"));
         btnMenuExit.setText(LocalizationUtil.localizedResourceBundle.getString("btnExit"));
         menuHelp.setText(LocalizationUtil.localizedResourceBundle.getString("menuHelp"));
         btnHelpAbout.setText(LocalizationUtil.localizedResourceBundle.getString("helpAbout"));
         btnSendChatMessage.setText(LocalizationUtil.localizedResourceBundle.getString("btnSendChatMessage"));
     }
-    
+
     private void run() throws IOException {
 
         // Make connection and initialize streams
@@ -184,6 +185,16 @@ public class ChatScreen extends javax.swing.JFrame {
                     out.println(user.getUsername());
                 } else if (line.startsWith("NAMEACCEPTED")) {
                     txtChatMessage.setEditable(true);
+                    txtChatMessage.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyPressed(KeyEvent evt) {
+                            if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                                sendMessage();
+                            }
+                        }
+                    });
+                    btnSendChatMessage.setEnabled(true);
+                    txtChatMessage.requestFocus();
                 } else if (line.startsWith("MESSAGE")) {
                     txtChatBox.append(line.substring(8) + "\n");
                 }
