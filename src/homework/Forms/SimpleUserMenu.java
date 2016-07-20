@@ -9,13 +9,17 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Image;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -91,6 +95,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         jScrollPane4 = new javax.swing.JScrollPane();
         tasksTable = new javax.swing.JTable();
         SimpleUserMenuPBar = new javax.swing.JProgressBar();
+        btnChat = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMenu = new javax.swing.JMenu();
         btnMenuEditProfile = new javax.swing.JMenuItem();
@@ -182,6 +187,14 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         SimpleUserMenuPBar.setIndeterminate(true);
         SimpleUserMenuPBar.setString("");
 
+        java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("resources/uimessages"); // NOI18N
+        btnChat.setText(bundle1.getString("btnChat")); // NOI18N
+        btnChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChatActionPerformed(evt);
+            }
+        });
+
         menuMenu.setText(bundle.getString("menuMenu")); // NOI18N
 
         btnMenuEditProfile.setText(bundle.getString("btnEditProfile")); // NOI18N
@@ -237,8 +250,10 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(btnMarkTask, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btnMarkTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnChat, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(showOrHideDoneTasks)
@@ -252,7 +267,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(415, 415, 415)
                                 .addComponent(btnSuggestSolution)))
-                        .addGap(0, 14, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(400, 400, 400)
@@ -266,16 +281,18 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
                 .addGap(1, 1, 1)
                 .addComponent(showOrHideDoneTasks)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnMarkTask, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(49, 49, 49)
-                                .addComponent(btnVote)))))
+                        .addComponent(btnMarkTask, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnChat))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addComponent(btnVote)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSuggestSolution)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -474,6 +491,10 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         t.start();
     }//GEN-LAST:event_btnMenuEditProfileActionPerformed
 
+    private void btnChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChatActionPerformed
+        openChatScreen();
+    }//GEN-LAST:event_btnChatActionPerformed
+
     private void refreshSolutions() {
         localSolutions = currentUser.getSolutions();
     }
@@ -617,6 +638,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         setTitle(LocalizationUtil.localizedResourceBundle.getString("userMenuKey"));
         lblWelcome.setText(LocalizationUtil.localizedResourceBundle.getString("lblWelcome") + currentUser.getUsername());
         btnMarkTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnMarkTaskDone"));
+        btnChat.setText(LocalizationUtil.localizedResourceBundle.getString("btnChat"));
         menuMenu.setText(LocalizationUtil.localizedResourceBundle.getString("menuMenu"));
         btnMenuExit.setText(LocalizationUtil.localizedResourceBundle.getString("btnExit"));
         menuHelp.setText(LocalizationUtil.localizedResourceBundle.getString("menuHelp"));
@@ -738,9 +760,25 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
         tasksTable.setEnabled(available);
         btnMarkTask.setEnabled(available);
         showOrHideDoneTasks.setEnabled(available);
+        btnChat.setEnabled(available);
         btnLanguage.setEnabled(available);
         btnHelpAbout.setEnabled(available);
         btnMenuEditProfile.setEnabled(available);
+    }
+
+    private void openChatScreen() {
+        Thread t = new Thread() {
+            public void run() {
+                try {
+                     ChatScreen simpleToAdminChat = new ChatScreen(currentUser);
+                   // ChatClient.main(currentUser);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        t.start();
+
     }
 
     public static void main(String email, String password) {
@@ -784,6 +822,7 @@ public class SimpleUserMenu extends javax.swing.JFrame implements ListSelectionL
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar SimpleUserMenuPBar;
+    private javax.swing.JButton btnChat;
     private javax.swing.JMenuItem btnHelpAbout;
     private javax.swing.JButton btnLanguage;
     private javax.swing.JButton btnMarkTask;
