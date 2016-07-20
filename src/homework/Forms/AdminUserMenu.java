@@ -101,6 +101,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         btnEditTask = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tasksTable = new javax.swing.JTable();
+        btnChat = new javax.swing.JButton();
         internalUsersTab = new javax.swing.JInternalFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         usersList = new javax.swing.JList<>();
@@ -217,6 +218,14 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         });
         jScrollPane4.setViewportView(tasksTable);
 
+        java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("resources/uimessages"); // NOI18N
+        btnChat.setText(bundle1.getString("btnChat")); // NOI18N
+        btnChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChatActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout internalTasksTabLayout = new javax.swing.GroupLayout(internalTasksTab.getContentPane());
         internalTasksTab.getContentPane().setLayout(internalTasksTabLayout);
         internalTasksTabLayout.setHorizontalGroup(
@@ -232,7 +241,8 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
                                 .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(btnMarkTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnAddTask, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)))
-                            .addComponent(btnDeleteTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnDeleteTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnChat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(internalTasksTabLayout.createSequentialGroup()
@@ -252,7 +262,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
                 .addContainerGap()
                 .addComponent(showOrHideDoneTasks)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(internalTasksTabLayout.createSequentialGroup()
                         .addComponent(btnMarkTask, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -260,7 +270,9 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEditTask, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDeleteTask, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnDeleteTask, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnChat))
                     .addGroup(internalTasksTabLayout.createSequentialGroup()
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -820,6 +832,10 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         t.start();
     }//GEN-LAST:event_btnMenuEditProfileActionPerformed
 
+    private void btnChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChatActionPerformed
+        openChatScreen();
+    }//GEN-LAST:event_btnChatActionPerformed
+
     private void loadUsersList() {
         users.clear();
         for (User u : currentUser.getAllUsers(currentUser.getClassID())) {
@@ -1007,6 +1023,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         btnAddTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnAddTask"));
         btnEditTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnEditTask"));
         btnDeleteTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnDeleteTask"));
+        btnChat.setText(LocalizationUtil.localizedResourceBundle.getString("btnChat"));
         btnAddUser.setText(LocalizationUtil.localizedResourceBundle.getString("btnAddUser"));
         btnAddTeacher.setText(LocalizationUtil.localizedResourceBundle.getString("btnAddTeacher"));
         btnRemoveUser.setText(LocalizationUtil.localizedResourceBundle.getString("btnRemoveUser"));
@@ -1195,6 +1212,21 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
         btnHelpAbout.setEnabled(available);
         btnMenuEditProfile.setEnabled(available);
     }
+    
+    private void openChatScreen() {
+        Thread t = new Thread() {
+            public void run() {
+                try {
+                    ChatScreen simpleToAdminChat = new ChatScreen(currentUser);
+                    // ChatClient.main(currentUser);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        t.start();
+
+    }
 
     public static void main(String email, String password) {
         /* Set the Nimbus look and feel */
@@ -1240,6 +1272,7 @@ public class AdminUserMenu extends javax.swing.JFrame implements ListSelectionLi
     private javax.swing.JButton btnAddTask;
     private javax.swing.JButton btnAddTeacher;
     private javax.swing.JButton btnAddUser;
+    private javax.swing.JButton btnChat;
     private javax.swing.JButton btnDeleteTask;
     private javax.swing.JButton btnEditTask;
     private javax.swing.JMenuItem btnHelpAbout;
