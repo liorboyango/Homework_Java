@@ -95,6 +95,7 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
         btnShowUsersNotDoneTask = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tasksTable = new javax.swing.JTable();
+        btnChat = new javax.swing.JButton();
         internalUsersTab = new javax.swing.JInternalFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         usersList = new javax.swing.JList<>();
@@ -206,6 +207,14 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
         });
         jScrollPane4.setViewportView(tasksTable);
 
+        java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("resources/uimessages"); // NOI18N
+        btnChat.setText(bundle1.getString("btnChat")); // NOI18N
+        btnChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChatActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout internalTasksTabLayout = new javax.swing.GroupLayout(internalTasksTab.getContentPane());
         internalTasksTab.getContentPane().setLayout(internalTasksTabLayout);
         internalTasksTabLayout.setHorizontalGroup(
@@ -213,27 +222,29 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
             .addGroup(internalTasksTabLayout.createSequentialGroup()
                 .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(internalTasksTabLayout.createSequentialGroup()
-                        .addGap(208, 208, 208)
-                        .addComponent(btnShowUsersDoneTask, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(53, 53, 53)
-                        .addComponent(btnShowUsersNotDoneTask, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(411, 411, 411)
+                        .addComponent(btnProvideSolution))
                     .addGroup(internalTasksTabLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnEditTask, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
-                            .addComponent(btnDeleteTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnAddTask, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(btnEditTask, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                                .addComponent(btnDeleteTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnAddTask, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnChat, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(internalTasksTabLayout.createSequentialGroup()
+                                .addGap(782, 782, 782)
+                                .addComponent(btnShowUsersDoneTask, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(53, 53, 53)
+                                .addComponent(btnShowUsersNotDoneTask, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(internalTasksTabLayout.createSequentialGroup()
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 729, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnApproveSolution))
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(internalTasksTabLayout.createSequentialGroup()
-                        .addGap(411, 411, 411)
-                        .addComponent(btnProvideSolution)))
-                .addContainerGap(98, Short.MAX_VALUE))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         internalTasksTabLayout.setVerticalGroup(
             internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -243,13 +254,15 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
                     .addComponent(btnShowUsersDoneTask)
                     .addComponent(btnShowUsersNotDoneTask))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(internalTasksTabLayout.createSequentialGroup()
                         .addComponent(btnAddTask, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEditTask, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDeleteTask, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnDeleteTask, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnChat))
                     .addGroup(internalTasksTabLayout.createSequentialGroup()
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(internalTasksTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -669,6 +682,10 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
         t.start();
     }//GEN-LAST:event_btnMenuEditProfileActionPerformed
 
+    private void btnChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChatActionPerformed
+        openChatScreen();
+    }//GEN-LAST:event_btnChatActionPerformed
+
     private void loadUsersList(int taskID, boolean done) {
         if (currentUser.getClassID() == 0) {    //if classID ==0 means that the teacher is not in a class - therefore cannot see other users that are in the same default classID == 0
             return;
@@ -836,6 +853,7 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
         btnAddTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnAddTask"));
         btnEditTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnEditTask"));
         btnDeleteTask.setText(LocalizationUtil.localizedResourceBundle.getString("btnDeleteTask"));
+        btnChat.setText(LocalizationUtil.localizedResourceBundle.getString("btnChat"));
         menuMenu.setText(LocalizationUtil.localizedResourceBundle.getString("menuMenu"));
         menuHelp.setText(LocalizationUtil.localizedResourceBundle.getString("menuHelp"));
         btnHelpAbout.setText(LocalizationUtil.localizedResourceBundle.getString("helpAbout"));
@@ -937,6 +955,21 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
         btnMenuEditProfile.setEnabled(available);
     }
 
+    private void openChatScreen() {
+        Thread t = new Thread() {
+            public void run() {
+                try {
+                    ChatScreen simpleToAdminChat = new ChatScreen(currentUser);
+                    // ChatClient.main(currentUser);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        t.start();
+
+    }
+
     public static void main(String email, String password) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -988,6 +1021,7 @@ public class TeacherUserMenu extends javax.swing.JFrame implements ListSelection
     private javax.swing.JProgressBar TeacherUserMenuPBar;
     private javax.swing.JButton btnAddTask;
     private javax.swing.JButton btnApproveSolution;
+    private javax.swing.JButton btnChat;
     private javax.swing.JButton btnDeleteTask;
     private javax.swing.JButton btnEditTask;
     private javax.swing.JMenuItem btnHelpAbout;
