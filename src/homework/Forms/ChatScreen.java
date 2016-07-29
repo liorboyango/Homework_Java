@@ -7,12 +7,14 @@ package homework.Forms;
 
 import ServerUtils.ChatServer;
 import homework.Users.User;
+import homework.Utils.ToastMessage;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -157,7 +159,7 @@ public class ChatScreen extends javax.swing.JFrame {
         txtChatMessage.setText("");
     }
 
-    private void updateCaptions()   {
+    private void updateCaptions() {
         setTitle(LocalizationUtil.localizedResourceBundle.getString("btnChat"));
         PromptSupport.uninstall(txtChatMessage);
         PromptSupport.setPrompt(LocalizationUtil.localizedResourceBundle.getString("type"), txtChatMessage);
@@ -172,7 +174,17 @@ public class ChatScreen extends javax.swing.JFrame {
 
         // Make connection and initialize streams
         String serverAddress = "127.0.0.1";
-        Socket socket = new Socket(serverAddress, 55555);
+        Socket socket;
+        try {
+            socket = new Socket(serverAddress, 55555);
+        } catch (ConnectException ce) {
+            ce.printStackTrace();
+            ToastMessage toastMessage = new ToastMessage(LocalizationUtil.localizedResourceBundle.getString("errServer"), 3000);
+            toastMessage.setVisible(true);
+            dispose();
+            return;
+            //Toast + close
+        }
         in = new BufferedReader(new InputStreamReader(
                 socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
@@ -184,6 +196,11 @@ public class ChatScreen extends javax.swing.JFrame {
                 if (line.startsWith("SUBMITNAME")) {
                     out.println(user.getUsername());
                 } else if (line.startsWith("NAMEACCEPTED")) {
+
+                } else if (line.startsWith("SUBMITROOM")) {
+                    out.println(user.getClassID());
+
+                } else if (line.startsWith("ROOMACCEPTED")) {
                     txtChatMessage.setEditable(true);
                     txtChatMessage.addKeyListener(new KeyAdapter() {
                         @Override

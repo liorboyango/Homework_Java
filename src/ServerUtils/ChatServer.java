@@ -11,12 +11,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.Map;
 
 public class ChatServer {
-    //  static TreeSet<ChatMessage> messages = new TreeSet();
 
     /**
      * The port that the server listens on.
@@ -27,13 +26,13 @@ public class ChatServer {
      * The set of all names of clients in the chat room. Maintained so that we
      * can check that new clients are not registering name already in use.
      */
-    private static HashSet<String> names = new HashSet<String>();
-
+    private static HashMap<String,Integer> names_rooms = new HashMap<>();
+    
     /**
-     * The set of all the print writers for all the clients. This set is kept so
+     * The map of all the print writers and room's ID for all the clients. This map is kept so
      * we can easily broadcast messages.
      */
-    private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
+    private static HashMap<PrintWriter,Integer> writers_rooms = new HashMap<>();
 
     /**
      * The appplication main method, which just listens on a port and spawns
@@ -59,6 +58,7 @@ public class ChatServer {
     private static class Handler extends Thread {
 
         private String name;
+        private int roomID;
         private Socket socket;
         private BufferedReader in;
         private PrintWriter out;
@@ -95,9 +95,9 @@ public class ChatServer {
                     if (name == null) {
                         return;
                     }
-                    synchronized (names) {
-                        if (!names.contains(name)) {
-                            names.add(name);
+                    synchronized (names_rooms) {
+                        if (!names_rooms.keySet().contains(name)) {
+                            names_rooms.put(name,0);
                             break;
                         }
                     }
@@ -106,7 +106,34 @@ public class ChatServer {
                 // socket's print writer to the set of all writers so
                 // this client can receive broadcast messages.
                 out.println("NAMEACCEPTED");
-                writers.add(out);
+          //     writers.add(out);
+
+                while (true) {
+                    out.println("SUBMITROOM");
+                    try {
+                        roomID = Integer.valueOf(in.readLine());
+                    /*    if(roomID == 0){
+                            return;
+                        }*/
+                        synchronized (names_rooms) {
+                            for(Map.Entry<String,Integer> e : names_rooms.entrySet()){
+                                if(e.getKey().equals(name)){
+                                    e.setValue(roomID);
+                                    break;
+                                }
+                            }
+                            break;
+                    }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
+
+                }
+                out.println("ROOMACCEPTED");
+                writers_rooms.put(out, roomID);
+                
+                
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.
                 while (true) {
@@ -114,8 +141,9 @@ public class ChatServer {
                     if (input == null) {
                         return;
                     }
-                    for (PrintWriter writer : writers) {
-                        writer.println("MESSAGE " + name + ": " + input);
+                    for (Map.Entry<PrintWriter, Integer> writer_room : writers_rooms.entrySet()) {
+                        if(roomID == writer_room.getValue())
+                            writer_room.getKey().println("MESSAGE " + name + ": " + input);
                     }
                 }
 
@@ -125,10 +153,10 @@ public class ChatServer {
                 // This client is going down!  Remove its name and its print
                 // writer from the sets, and close its socket.
                 if (name != null) {
-                    names.remove(name);
+                    names_rooms.remove(name);
                 }
                 if (out != null) {
-                    writers.remove(out);
+                    writers_rooms.remove(out);
                 }
                 try {
                     socket.close();
@@ -139,35 +167,4 @@ public class ChatServer {
         }
     }
 
-    /*public static void main(String[] args) throws IOException {
-        ServerSocket listener = new ServerSocket(55555);
-        
-        try {
-            while (true) {
-                Socket socket = listener.accept();
-                try {
-                    PrintWriter out
-                            = new PrintWriter(socket.getOutputStream(), true);
-                    
-                    BufferedReader in = new BufferedReader(
-                        new InputStreamReader(socket.getInputStream()));
-                    if(in.readLine() == null){
-                        break;
-                    }
-                    ChatMessage tempMessage = new ChatMessage();
-                    tempMessage.setMessage(in.readLine());
-                    tempMessage.setTime(new Date());
-                    for(ChatMessage cm : messages){
-                        out.println(cm);
-                    }
-                } finally {
-                    socket.close();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            listener.close();
-        }
-    }*/
 }
